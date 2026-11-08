@@ -1304,7 +1304,7 @@ function vLegal(kind){
   const sec = (t, ps) => `<h2>${t}</h2>${ps.map(x => `<p>${x}</p>`).join('')}`;
   const body = P ? [
     sec('The short version', ['Without an account, QELVO keeps everything on your device. If you sign in to sync, your subscriptions, groups and expenses are stored in a secure database in Canada so they sync across your devices and with your group. There are no ads, and your data is never sold.']),
-    sec('If you sign in', ['Your email address is used only to sign you in. Synced data is stored with Supabase in Canada, protected by rules that let only you see your subscriptions and only a group’s members see that group. Receipt photos and your app lock stay on your device. To delete your account and synced data, email us.']),
+    sec('If you sign in', ['Your email address is used only to sign you in. Synced data is stored with Supabase in Canada, protected by rules that let only you see your subscriptions and only a group’s members see that group. Receipt photos and your app lock stay on your device. You can delete your account and synced data anytime under You → Delete account.']),
     sec('What QELVO stores', ['The subscriptions, groups, expenses, names and settings you enter are saved in your browser’s storage on this device, and also in your synced account if you sign in. Clearing your browser data or using “Erase everything” deletes them.']),
     sec('What leaves your device', ['Invite links: when you share a group, the link contains that group’s name, member names and expenses. Anyone with the link can read them, so only send it to people in the group.', 'Service logos: to show logos, QELVO asks Google’s favicon service for the icon of a service’s website, like netflix.com. Your amounts and names are not sent.', 'Fonts are loaded from Google Fonts. Like any website request, these providers can see basic technical details such as your IP address.']),
     sec('Notifications', ['Renewal alerts are created on your device. They are only turned on if you allow them, and you can turn them off anytime.']),
@@ -1325,9 +1325,9 @@ function vLegal(kind){
   return topbar(P ? 'Privacy policy' : 'Terms of use', 'Last updated November 8, 2026', '', `<a class="iconbtn" href="#you" aria-label="Back">${ICON.back}</a>`) + `<article class="legal">${body.join('')}</article>`;
 }
 function notifyStatus(){
-  if (!('Notification' in window)) return 'Not supported in this browser';
-  if (S.notify && Notification.permission === 'granted') return 'On';
-  if (Notification.permission === 'denied') return 'Blocked in browser settings';
+  if (S.push) return 'On';
+  if (!('Notification' in window) || !('PushManager' in window)) return isIOS && !isStandalone() ? 'Add to Home Screen first' : 'Not supported here';
+  if (Notification.permission === 'denied') return 'Blocked in settings';
   return 'Off';
 }
 function vYou(){
@@ -1342,7 +1342,7 @@ function vYou(){
   <div class="field"><span>Appearance</span>${radios('theme', [['system','Auto'],['light','Light'],['dark','Dark']], S.theme)}</div>
   <div class="sec"><h2>Smart tools</h2></div>
   <div class="list">
-    <button class="row" data-act="notify">${glyph('bell')}<div class="main"><div class="t">Renewal alerts</div><div class="s">A heads-up the day before you’re charged</div></div><span class="st">${notifyStatus()}</span></button>
+    <button class="row" data-act="notify">${glyph('bell')}<div class="main"><div class="t">Renewal alerts</div><div class="s">Reminders before charges, even when QELVO is closed</div></div><span class="st">${notifyStatus()}</span></button>
     <button class="row" data-act="budget">${glyph('sliders')}<div class="main"><div class="t">Monthly budget</div><div class="s">Get warned when subscriptions creep up</div></div><span class="st">${S.budget > 0 ? fmt(S.budget) : 'Not set'}</span></button>
     <button class="row" data-act="rate">${glyph('star')}<div class="main"><div class="t">Rate your subscriptions</div><div class="s">Find the ones you could live without</div></div></button>
     <button class="row" data-act="shareCard">${glyph('megaphone')}<div class="main"><div class="t">Share your year card</div><div class="s">Made for Instagram stories and WhatsApp</div></div></button>
@@ -1575,6 +1575,54 @@ function track(kind){
   } catch(e){}
 }
 window.addEventListener('appinstalled', () => track('install'));
+const PUSH_PUBLIC = 'BN81KvMxsR447EemSYhJur5x2fn5lHRheCID0S_Dp42wJp_Dh-prGLSXnGSuDOGaC_uyTTL3AACAZYMCd-Hp6Ps';
+const b64ToU8 = s => { const p = '='.repeat((4 - s.length % 4) % 4); const r = atob((s + p).replace(/-/g, '+').replace(/_/g, '/')); return Uint8Array.from(r, c => c.charCodeAt(0)); };
+async function enablePush(){
+  if (isIOS && !isStandalone()){ toast('On iPhone, add QELVO to your Home Screen first, then turn alerts on from there.'); return; }
+  if (!('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)){ toast('This browser can’t show alerts. Try Chrome, or add QELVO to your Home Screen.'); return; }
+  if (!cloudUser){ signInSheet('Sign in so QELVO can remind you before charges, even when the app is closed.'); return; }
+  const perm = await Notification.requestPermission();
+  if (perm !== 'granted'){ render(); toast('Alerts are blocked. Allow notifications for QELVO in your settings.'); return; }
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    let sub = await reg.pushManager.getSubscription();
+    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly:true, applicationServerKey:b64ToU8(PUSH_PUBLIC) });
+    const j = sub.toJSON();
+    const { error } = await sb.from('push_subscriptions').upsert({ user_id:cloudUser.id, endpoint:j.endpoint, p256dh:j.keys.p256dh, auth:j.keys.auth, tz:(Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/Toronto') }, { onConflict:'endpoint' });
+    if (error) throw error;
+    S.push = true; S.notify = true; save(); render(); toast('Alerts on. QELVO reminds you at 9 am, the day before a charge.');
+  } catch(e){ console.warn('push', e); toast('Couldn’t turn on alerts. Try again.'); }
+}
+async function disablePush(quiet){
+  try {
+    const reg = await navigator.serviceWorker.ready, sub = await reg.pushManager.getSubscription();
+    if (sub){ if (sb && cloudUser) await sb.from('push_subscriptions').delete().eq('endpoint', sub.endpoint); await sub.unsubscribe(); }
+  } catch(e){}
+  S.push = false; S.notify = false; save();
+  if (!quiet){ render(); toast('Alerts off'); }
+}
+function deleteAccountSheet(){
+  if (!sb || !cloudUser) return;
+  openSheet('Delete your account', `<form id="f"><p class="hint" style="margin:0 0 12px">This permanently deletes your QELVO account and everything synced to it. Groups you share stay with the other members. This can’t be undone.</p>
+    <label class="switch"><input type="checkbox" name="wipe" checked><span class="sw"></span><span class="sl"><b>Also erase this device</b><small>Removes your subscriptions and groups from this phone too.</small></span></label>
+    <label class="field"><span>Type DELETE to confirm</span><input type="text" name="c" autocomplete="off" autocapitalize="characters"></label>
+    <button class="btn danger block" type="submit">Delete my account</button></form>`, root => {
+    const f = root.querySelector('#f');
+    f.addEventListener('submit', async e => {
+      e.preventDefault();
+      if (f.c.value.trim().toUpperCase() !== 'DELETE'){ toast('Type DELETE to confirm'); return; }
+      const b = f.querySelector('button'); b.disabled = true;
+      try {
+        if (S.push) await disablePush(true);
+        const { error } = await sb.rpc('delete_my_account'); if (error) throw error;
+        await sb.auth.signOut().catch(() => {});
+        SM = freshMeta(); saveSM();
+        if (f.wipe.checked){ const keep = { theme:S.theme, currency:S.currency, rates:S.rates }; S = Object.assign(fresh(), keep); } else S.groups.forEach(g => { g.cloud = false; });
+        saveLocal(); closeSheet(); location.hash = 'home'; render(); toast('Your account was deleted');
+      } catch(err){ b.disabled = false; toast('Couldn’t delete the account. Try again.'); }
+    });
+  });
+}
 function loadCloud(){
   if (sb || location.protocol === 'file:') return;
   const s = document.createElement('script'); s.src = SB_JS; s.async = true; s.crossOrigin = 'anonymous';
@@ -1762,7 +1810,7 @@ async function cloudJoinSheet(gid, code){
 function accountHTML(){
   if (!sb) return '';
   if (!cloudUser) return `<div class="list" style="margin-bottom:18px"><button class="row" data-act="signIn">${glyph('users')}<div class="main"><div class="t">Sign in to sync</div><div class="s">Live groups with friends, plus your data backed up</div></div>${ICON.next}</button></div>`;
-  return `<div class="list" style="margin-bottom:18px"><div class="row">${glyph('check')}<div class="main"><div class="t">${esc(cloudUser.email || 'Signed in')}</div><div class="s" id="syncStatus">${syncLabel()}</div></div><button class="btn small ghost" data-act="syncNow">Sync now</button></div><button class="row" data-act="signOut"><div class="main"><div class="t neg-t">Sign out</div><div class="s">Your data stays on this device</div></div></button></div>`;
+  return `<div class="list" style="margin-bottom:18px"><div class="row">${glyph('check')}<div class="main"><div class="t">${esc(cloudUser.email || 'Signed in')}</div><div class="s" id="syncStatus">${syncLabel()}</div></div><button class="btn small ghost" data-act="syncNow">Sync now</button></div><button class="row" data-act="signOut"><div class="main"><div class="t">Sign out</div><div class="s">Your data stays on this device</div></div></button><button class="row" data-act="deleteAccount"><div class="main"><div class="t neg-t">Delete account</div><div class="s">Permanently remove your synced data</div></div></button></div>`;
 }
 
 /* ---------- Milestones, alerts, sharing ---------- */
@@ -1796,6 +1844,7 @@ function confetti(){
   })(t0);
 }
 function checkAlerts(){
+  if (S.push) return;
   try {
     if (!S.notify || !('Notification' in window) || Notification.permission !== 'granted') return;
     const day = iso(today()); if (S.notifyDay === day) return;
@@ -2493,7 +2542,7 @@ const actions = {
   syncNow: () => queueSync(async () => { setSyncState('busy'); await pushAll(); await pullAll(); setSyncState('idle'); toast('All synced'); }),
   signOut: (id, el) => {
     if (!el.dataset.armed){ el.dataset.armed = '1'; const s = el.querySelector('.s'); if (s) s.textContent = 'Tap again to sign out'; return; }
-    sb.auth.signOut().finally(() => { SM = freshMeta(); saveSM(); S.groups.forEach(g => { g.cloud = false; }); saveLocal(); render(); toast('Signed out'); });
+    (S.push ? disablePush(true) : Promise.resolve()).then(() => sb.auth.signOut()).finally(() => { SM = freshMeta(); saveSM(); S.groups.forEach(g => { g.cloud = false; }); saveLocal(); render(); toast('Signed out'); });
   },
   search: () => searchSheet(),
   shareGroup: id => shareGroupSheet(id),
@@ -2525,14 +2574,8 @@ const actions = {
   shareCard: () => shareCardSheet(),
   restoreData: () => restoreSheet(),
   subCat: id => { subCat = id; render(); },
-  notify: () => {
-    if (!('Notification' in window)){ toast('Alerts aren’t supported in this browser'); return; }
-    if (S.notify && Notification.permission === 'granted'){ S.notify = false; save(); render(); toast('Renewal alerts off'); return; }
-    Notification.requestPermission().then(p => {
-      if (p === 'granted'){ S.notify = true; S.notifyDay = ''; save(); checkAlerts(); render(); toast('Renewal alerts on'); }
-      else { render(); toast('Alerts are blocked. Allow them in your browser settings.'); }
-    });
-  },
+  notify: () => { (S.push ? disablePush : enablePush)(); },
+  deleteAccount: () => deleteAccountSheet(),
   invite: async id => {
     const g = S.groups.find(x => x.id === id); if (!g) return;
     track('invite');

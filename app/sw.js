@@ -1,5 +1,5 @@
 // Settle service worker: offline support
-const CACHE = 'qelvo-app-v1';
+const CACHE = 'qelvo-app-v2';
 const EXT = 'qelvo-ext-v1';
 const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './catalog.json'];
 
@@ -39,4 +39,19 @@ self.addEventListener('fetch', e => {
       return hit || net;
     })));
   }
+});
+
+// Push notifications: renewal reminders and live group activity
+self.addEventListener('push', e => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch(err){ d = { title:'QELVO', body:e.data ? e.data.text() : '' }; }
+  e.waitUntil(self.registration.showNotification(d.title || 'QELVO', { body:d.body || '', icon:'icon-192.png', badge:'icon-192.png', tag:d.tag, renotify:!!d.tag, data:{ url:d.url || './' } }));
+});
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const target = new URL((e.notification.data && e.notification.data.url) || './', self.registration.scope).href;
+  e.waitUntil(self.clients.matchAll({ type:'window', includeUncontrolled:true }).then(cs => {
+    for (const c of cs){ if (c.url.startsWith(self.registration.scope)){ if ('navigate' in c) c.navigate(target).catch(() => {}); return c.focus(); } }
+    return self.clients.openWindow(target);
+  }));
 });

@@ -1,7 +1,7 @@
 {
-  "name": "Settle",
-  "short_name": "Settle",
-  "description": "Track subscriptions and split shared bills",
+  "name": "QELVO",
+  "short_name": "QELVO",
+  "description": "One world. All your money. In sync. The shared financial ecosystem.",
   "id": "./",
   "start_url": "./",
   "scope": "./",

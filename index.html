@@ -8,10 +8,10 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Settle">
+<meta name="apple-mobile-web-app-title" content="QELVO">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<title>Settle: subscriptions and shared bills</title>
+<title>QELVO: One world. All your money. In sync.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -80,7 +80,8 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stro
 .splash .core{transform-box:fill-box;transform-origin:center;animation:core 1s .55s ease-in-out both}
 @keyframes m1{from{transform:translate(26px,-26px);opacity:0}}
 @keyframes m2{from{transform:translate(-26px,26px);opacity:0}}
-.splash .w{font:500 34px/1 Kanit,sans-serif;letter-spacing:-.06em;animation:rise .5s .35s ease both}
+.splash .w{font:600 34px/1 Kanit,sans-serif;letter-spacing:.2em;margin-right:-.2em;animation:rise .5s .35s ease both}
+.splash .slg{font-size:14px;opacity:.75;letter-spacing:.01em;animation:rise .5s .45s ease both;margin-top:-4px}
 .splash .by{display:flex;align-items:center;gap:9px;font-size:10px;letter-spacing:.19em;text-transform:uppercase;opacity:.6;animation:rise .5s .55s ease both}
 .splash .by .vl{height:13px;width:auto}
 @keyframes spinin{from{transform:rotate(-180deg) scale(.4);opacity:0}}
@@ -96,7 +97,7 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stro
 .nav a svg.i{width:22px;height:22px}
 .nav a[aria-current="page"]{color:var(--ink)}
 .nav a[aria-current="page"] .ic{background:var(--green-soft);color:var(--green)}
-.brand{align-items:center;gap:11px;font-family:Kanit,sans-serif;font-weight:500;font-size:23px;letter-spacing:-.06em}
+.brand{align-items:center;gap:11px;font-family:Kanit,sans-serif;font-weight:600;font-size:21px;letter-spacing:.14em}
 .mark{width:26px;height:26px}
 .mark .p1,.mark .p2{transition:transform .5s var(--ease)}
 @media (hover:hover){.brand:hover .mark .p1{transform:translate(6px,-6px)}}
@@ -498,7 +499,7 @@ body::after{display:none}
 .slip::after{content:"";position:absolute;left:0;right:0;top:100%;height:10px;background:linear-gradient(135deg,var(--paper) 33.33%,transparent 33.33%) 0 0/16px 16px,linear-gradient(225deg,var(--paper) 33.33%,transparent 33.33%) 0 0/16px 16px}
 @keyframes print{from{transform:translateY(-100%)}}
 .still .slip,.still .cardhead,.still .wcard{animation:none!important}
-.slip .ttl{text-align:center;font-size:17px;font-weight:500;letter-spacing:.32em;margin:2px 0 0}
+.slip .ttl{text-align:center;font-size:17px;font-weight:600;letter-spacing:.32em;margin:2px 0 0}
 .slip .hd{text-align:center;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--paper-muted)}
 .slip .shd{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-muted);margin:6px 0 2px}
 .dash{border-top:1.5px dashed var(--paper-line);margin:10px 0}
@@ -607,12 +608,13 @@ main,.sheet{zoom:var(--tz,1)}
 
 <div class="splash" id="splash" aria-hidden="true"><div class="in">
   <svg class="mk" viewBox="0 0 120 120" aria-hidden="true"><path class="p1" d="M64 0H120A56 56 0 0 1 64 56Z" fill="currentColor"/><path class="p2" d="M56 120H0A56 56 0 0 1 56 64Z" fill="#7c5cff"/><rect class="core" x="56" y="56" width="8" height="8" fill="currentColor"/></svg>
-  <div class="w">Settle</div>
+  <div class="w">QELVO</div>
+  <div class="slg">One world. All your money. In sync.</div>
   <div class="by">by <svg class="vl" viewBox="0 0 1027.6 235" aria-hidden="true" focusable="false"><g transform="scale(1.9583)"><g fill="currentColor"><path d="M0 56V0A56 56 0 0 1 56 56Z"/><path d="M64 0H120A56 56 0 0 1 64 56Z"/><path d="M120 64V120A56 56 0 0 1 64 64Z"/><path d="M56 120H0A56 56 0 0 1 56 64Z"/></g><rect x="56" y="56" width="8" height="8" fill="#7C5CFF"/></g><g transform="translate(303 67.5)"><g fill="currentColor"><rect x="117.5" y="0" width="13.6" height="100"/><rect x="117.5" y="0" width="61.5" height="13.6"/><rect x="117.5" y="86.4" width="61.5" height="13.6"/><rect x="141.0" y="43.2" width="30" height="13.6"/><rect x="205.8" y="0" width="13.6" height="100"/><rect x="205.8" y="86.4" width="57.6" height="13.6"/><rect x="507.4" y="0" width="13.6" height="100"/><rect x="553.3" y="0" width="13.6" height="100"/><rect x="553.3" y="0" width="61.5" height="13.6"/><rect x="553.3" y="86.4" width="61.5" height="13.6"/><rect x="576.8" y="43.2" width="30" height="13.6"/><rect x="641.6" y="0" width="13.6" height="100"/><rect x="710.9" y="0" width="13.6" height="100"/></g><g fill="none" stroke="currentColor" stroke-width="13.6"><path d="M6.5 0L47.5 100L88.5 0"/><circle cx="340" cy="50" r="43.2"/><path d="M423.2 100V6.8H454.9A21.6 21.6 0 0 1 454.9 50H423.2"/><path d="M449 50L487 101"/><path d="M648.4 0L717.7 100"/></g><circle cx="340" cy="50" r="7" fill="#7C5CFF"/></g></svg></div>
 </div></div>
 
 <nav class="nav" aria-label="Main">
-  <div class="brand"><svg class="mark" viewBox="0 0 120 120" aria-hidden="true"><path class="p1" d="M64 0H120A56 56 0 0 1 64 56Z" fill="currentColor"/><path class="p2" d="M56 120H0A56 56 0 0 1 56 64Z" fill="#7c5cff"/><rect class="core" x="56" y="56" width="8" height="8" fill="currentColor"/></svg>Settle</div>
+  <div class="brand"><svg class="mark" viewBox="0 0 120 120" aria-hidden="true"><path class="p1" d="M64 0H120A56 56 0 0 1 64 56Z" fill="currentColor"/><path class="p2" d="M56 120H0A56 56 0 0 1 56 64Z" fill="#7c5cff"/><rect class="core" x="56" y="56" width="8" height="8" fill="currentColor"/></svg>QELVO</div>
   <a href="#home" data-nav="home"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M17 8v-3a1 1 0 0 0 -1 -1h-10a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1 -1 1h-12a2 2 0 0 1 -2 -2v-12"/><path d="M20 12v4h-4a2 2 0 0 1 0 -4h4"/></svg></span>Wallet</a>
   <a href="#insights" data-nav="insights"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M10 3.2a9 9 0 1 0 10.8 10.8a1 1 0 0 0 -1 -1h-3.8a4.1 4.1 0 1 1 -5 -5v-4a.9 .9 0 0 0 -1 -.8"/><path d="M15 3.5a9 9 0 0 1 5.5 5.5h-4.5a9 9 0 0 0 -1 -1v-4.5"/></svg></span>Insights</a>
   <a href="#you" data-nav="you"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/></svg></span>You</a>
@@ -630,7 +632,7 @@ main,.sheet{zoom:var(--tz,1)}
 </div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="achv" id="achv" role="status" aria-live="polite"></div>
-<div class="lock" id="lock" hidden role="dialog" aria-modal="true" aria-label="Settle is locked"><div class="lin">
+<div class="lock" id="lock" hidden role="dialog" aria-modal="true" aria-label="QELVO is locked"><div class="lin">
   <svg class="lmk" viewBox="0 0 120 120" aria-hidden="true"><path d="M64 0H120A56 56 0 0 1 64 56Z" fill="currentColor"/><path d="M56 120H0A56 56 0 0 1 56 64Z" fill="#7c5cff"/><rect x="56" y="56" width="8" height="8" fill="currentColor"/></svg>
   <div class="lt">Enter your PIN</div><button class="biobtn" data-bio aria-label="Unlock with Face ID"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8v-2a2 2 0 0 1 2 -2h2"/><path d="M4 16v2a2 2 0 0 0 2 2h2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><path d="M16 20h2a2 2 0 0 0 2 -2v-2"/><path d="M9 10l.01 0"/><path d="M15 10l.01 0"/><path d="M9.5 15a3.5 3.5 0 0 0 5 0"/></svg></button><div class="biolbl">Tap to unlock with Face ID</div><div class="dots" aria-live="polite"></div><div class="lhint" aria-live="polite"></div>
   <div class="pad"><button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button><button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button><button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button><span></span><button data-k="0">0</button><button data-k="del" aria-label="Delete">⌫</button></div>
@@ -940,7 +942,7 @@ let obStep = 0, obPicked = new Set(), obTotal = 0, onbActive = false;
 function vOnboard(){
   onbActive = true;
   const dots = n => `<div class="steps" aria-hidden="true">${[0,1,2].map(i => `<i class="${i <= n ? 'on' : ''}"></i>`).join('')}</div>`;
-  if (obStep === 0) return `<div class="ob">${PW_SVG}<h1>Stop paying for things you forgot.</h1><p class="lead">Settle tracks every subscription before it renews, and splits shared bills with friends. Free, private, and no signup.</p><div class="btns"><button class="btn primary" data-act="obNext">Get started</button><button class="btn ghost" data-act="obSplit">I’m here to split bills</button><button class="btn ghost" data-act="sample">Explore with sample data</button></div></div>`;
+  if (obStep === 0) return `<div class="ob">${PW_SVG}<div class="eyebrow" style="margin-bottom:14px">The shared financial ecosystem</div><h1>One world. All your money. In sync.</h1><p class="lead">QELVO tracks every subscription before it renews and splits shared bills with friends. Free, private, no signup.</p><div class="btns"><button class="btn primary" data-act="obNext">Get started</button><button class="btn ghost" data-act="obSplit">I’m here to split bills</button><button class="btn ghost" data-act="sample">Explore with sample data</button></div></div>`;
   if (obStep === 1){
     const tot = PRESETS.filter((p,i) => obPicked.has(i)).reduce((a,p) => a + presetPrice(p), 0);
     return `<div class="ob top">${dots(1)}<div class="eyebrow">Step 1 of 3</div><h1 class="sm">What do you pay for?</h1><p class="lead">Tap everything you’re subscribed to. Prices are typical, and you can edit them anytime.</p>
@@ -972,7 +974,7 @@ function homeAlerts(subs){
     const y = rare.reduce((a,s) => a + monthly(s) * 12, 0);
     out.push(`<div class="alert">${glyph('bulb')}<div><div class="t">You could save ${fmt(y)} a year</div><div class="s">You said you rarely use ${listNames(rare)}.</div><div class="acts"><button class="btn small soft" data-act="editSub" data-id="${rare[0].id}">Review ${esc(rare[0].name)}</button></div></div></div>`);
   } else if (subs.length >= 3 && subs.some(s => !s.worth)){
-    out.push(`<div class="alert">${glyph('star')}<div><div class="t">Which ones are worth it?</div><div class="s">Rate your subscriptions and Settle will point out where to save.</div><div class="acts"><button class="btn small soft" data-act="rate">Rate them</button></div></div></div>`);
+    out.push(`<div class="alert">${glyph('star')}<div><div class="t">Which ones are worth it?</div><div class="s">Rate your subscriptions and QELVO will point out where to save.</div><div class="acts"><button class="btn small soft" data-act="rate">Rate them</button></div></div></div>`);
   }
   return out.join('');
 }
@@ -1080,7 +1082,7 @@ function vSubs(){
     <div class="cardhead" style="--c:#E9E3D6;--t:#1B1B1F"><span class="n">${SUB_ICON}${act.length} active</span><span class="a">${fmt(total)}<small>a month</small></span></div>
     <div class="slot"></div>
     <div class="feed"><div class="slip">
-      <div class="ttl">SETTLE</div><div class="hd">${esc(month)}</div>
+      <div class="ttl">QELVO</div><div class="hd">${esc(month)}</div>
       <div class="dash"></div>
       ${body}
       <div class="dash"></div>
@@ -1114,7 +1116,7 @@ function vInsightsPage(){
   const total = act.reduce((a,s) => a + monthly(s), 0), t = myTotals();
   if (!['insights','calendar'].includes(subView)) subView = 'insights';
   const views = [['insights','Overview'],['calendar','Calendar']];
-  const body = !act.length ? `<div class="empty"><h2>Nothing to chart yet</h2><p>Add subscriptions and Settle will show where your money goes.</p><div class="btns"><button class="btn primary" data-act="addSub">Add a subscription</button></div></div>`
+  const body = !act.length ? `<div class="empty"><h2>Nothing to chart yet</h2><p>Add subscriptions and QELVO will show where your money goes.</p><div class="btns"><button class="btn primary" data-act="addSub">Add a subscription</button></div></div>`
     : subView === 'calendar' ? vCalendar(act) : historyHTML() + `<div class="duo" style="margin:0 0 12px"><div class="tile pos"><div class="k">You’re owed</div><div class="v">${fmt(t.owed)}</div></div><div class="tile neg"><div class="k">You owe</div><div class="v">${fmt(t.owe)}</div></div></div>` + vInsights(act, gone, total);
   return topbar('Insights', `${fmt(total)} a month on subscriptions`) + `
     <div style="margin:0 0 16px"><div class="seg full" role="group" aria-label="View">${views.map(([k,l]) => `<button data-act="subView" data-id="${k}" aria-pressed="${subView===k}">${l}</button>`).join('')}</div></div>
@@ -1216,7 +1218,7 @@ function vGroup(g){
     <div class="feed"><div class="slip">
       <div class="ttl">${esc(g.name.toUpperCase())}</div><div class="hd">${g.members.map(m => esc(mName(g,m.id))).join(', ')}</div>
       <div class="dash"></div>
-      ${empty ? `<div class="cardempty"><b style="display:block;color:var(--paper-ink);font-size:16px;font-weight:500;margin-bottom:6px">Add your first expense</b>Enter what someone paid, like rent, groceries or dinner. Settle splits it and works out who owes who.<br><button class="sbtn" style="margin-top:14px;font-size:14px;padding:10px 18px" data-act="addExpense" data-id="${g.id}">Add expense</button></div>` : groupBody(g, debts, acts, v)}
+      ${empty ? `<div class="cardempty"><b style="display:block;color:var(--paper-ink);font-size:16px;font-weight:500;margin-bottom:6px">Add your first expense</b>Enter what someone paid, like rent, groceries or dinner. QELVO splits it and works out who owes who.<br><button class="sbtn" style="margin-top:14px;font-size:14px;padding:10px 18px" data-act="addExpense" data-id="${g.id}">Add expense</button></div>` : groupBody(g, debts, acts, v)}
     </div></div>
     ${acts.length ? `<p class="tearhint">Swipe an expense left to delete it</p>` : ''}
     <div class="cardacts"><button class="btn primary" data-act="addExpense" data-id="${g.id}">Add expense</button>${debts.length ? `<button class="btn ghost" data-act="settle" data-id="${g.id}">Settle up</button>` : `<button class="btn ghost" data-act="invite" data-id="${g.id}">Invite people</button>`}</div>
@@ -1263,7 +1265,7 @@ function safetyCard(){
   }
   if (S.snooze && S.snooze > Date.now()) return '';
   const how = deferredPrompt ? '' : isIOS ? ' Tap Share, then Add to Home Screen.' : ' Use your browser menu and choose Install app.';
-  return `<div class="alert warn">${glyph('bell')}<div><div class="t">Keep your data safe</div><div class="s">${isIOS ? 'Safari can clear website data you haven’t opened in a while. Add Settle to your Home Screen to keep it.' : 'Install Settle so your data stays put and it opens like a real app.'}${how}</div><div class="acts">${deferredPrompt ? '<button class="btn small soft" data-act="install">Install app</button>' : ''}<button class="btn small soft" data-act="backupFile">Save backup</button><button class="btn small ghost" data-act="snooze">Later</button></div></div></div>`;
+  return `<div class="alert warn">${glyph('bell')}<div><div class="t">Keep your data safe</div><div class="s">${isIOS ? 'Safari can clear website data you haven’t opened in a while. Add QELVO to your Home Screen to keep it.' : 'Install QELVO so your data stays put and it opens like a real app.'}${how}</div><div class="acts">${deferredPrompt ? '<button class="btn small soft" data-act="install">Install app</button>' : ''}<button class="btn small soft" data-act="backupFile">Save backup</button><button class="btn small ghost" data-act="snooze">Later</button></div></div></div>`;
 }
 function installCard(){
   if (isStandalone()) return '';
@@ -1271,30 +1273,30 @@ function installCard(){
   if (deferredPrompt) action = `<button class="btn primary block" data-act="install" style="margin-top:14px">Install app</button>`;
   else if (isIOS) action = `<p class="hint" style="margin:12px 0 0">In Safari, tap the Share button, then choose Add to Home Screen.</p>`;
   else action = `<p class="hint" style="margin:12px 0 0">Open your browser menu and choose Install app or Add to Home screen.</p>`;
-  return `<div class="panel" style="margin-bottom:22px"><div class="install">${iconURL ? `<img src="${iconURL}" alt="">` : ''}<div><div class="t">Put Settle on your home screen</div><div class="s">Opens full screen, like any other app.</div></div></div>${action}</div>`;
+  return `<div class="panel" style="margin-bottom:22px"><div class="install">${iconURL ? `<img src="${iconURL}" alt="">` : ''}<div><div class="t">Put QELVO on your home screen</div><div class="s">Opens full screen, like any other app.</div></div></div>${action}</div>`;
 }
 
 function vLegal(kind){
   const P = kind === 'privacy';
   const sec = (t, ps) => `<h2>${t}</h2>${ps.map(x => `<p>${x}</p>`).join('')}`;
   const body = P ? [
-    sec('The short version', ['Settle keeps your data on your own device. There’s no account, no server holding your information, and no ads. Velorien Creative Studio can’t see what you enter.']),
-    sec('What Settle stores', ['The subscriptions, groups, expenses, names and settings you enter are saved in your browser’s storage on this device only. Clearing your browser data or using “Erase everything” deletes them.']),
-    sec('What leaves your device', ['Invite links: when you share a group, the link contains that group’s name, member names and expenses. Anyone with the link can read them, so only send it to people in the group.', 'Service logos: to show logos, Settle asks Google’s favicon service for the icon of a service’s website, like netflix.com. Your amounts and names are not sent.', 'Fonts are loaded from Google Fonts. Like any website request, these providers can see basic technical details such as your IP address.']),
+    sec('The short version', ['QELVO keeps your data on your own device. There’s no account, no server holding your information, and no ads. Velorien Creative Studio can’t see what you enter.']),
+    sec('What QELVO stores', ['The subscriptions, groups, expenses, names and settings you enter are saved in your browser’s storage on this device only. Clearing your browser data or using “Erase everything” deletes them.']),
+    sec('What leaves your device', ['Invite links: when you share a group, the link contains that group’s name, member names and expenses. Anyone with the link can read them, so only send it to people in the group.', 'Service logos: to show logos, QELVO asks Google’s favicon service for the icon of a service’s website, like netflix.com. Your amounts and names are not sent.', 'Fonts are loaded from Google Fonts. Like any website request, these providers can see basic technical details such as your IP address.']),
     sec('Notifications', ['Renewal alerts are created on your device. They are only turned on if you allow them, and you can turn them off anytime.']),
-    sec('Photos, payments and app lock', ['Receipt photos you attach are stored only on this device. Payment buttons open PayPal or Venmo with the amount filled in; Settle never sees or handles your money. App lock uses a PIN saved as a one-way code, plus your phone’s own Face ID or fingerprint check, which never shares your face or fingerprint with Settle.']),
-    sec('Selling and tracking', ['Settle does not sell your data and does not use advertising trackers.']),
-    sec('Children', ['Settle is not intended for children under 13.']),
+    sec('Photos, payments and app lock', ['Receipt photos you attach are stored only on this device. Payment buttons open PayPal or Venmo with the amount filled in; QELVO never sees or handles your money. App lock uses a PIN saved as a one-way code, plus your phone’s own Face ID or fingerprint check, which never shares your face or fingerprint with QELVO.']),
+    sec('Selling and tracking', ['QELVO does not sell your data and does not use advertising trackers.']),
+    sec('Children', ['QELVO is not intended for children under 13.']),
     sec('Changes and contact', ['If this policy changes, the date below will be updated. Questions: <a href="mailto:hitin@velorienstudiocreative.com">hitin@velorienstudiocreative.com</a>.'])
   ] : [
-    sec('Using Settle', ['Settle is a free tool made by Velorien Creative Studio to help you track subscriptions and split shared bills. By using it, you agree to these terms.']),
-    sec('Not financial advice', ['Totals, splits and savings are estimates based on what you enter. Check amounts before paying anyone. Settle does not give financial, legal or tax advice.']),
-    sec('Payments', ['Settle doesn’t move money. Any payment happens outside the app, between you and other people, and you’re responsible for it.']),
+    sec('Using QELVO', ['QELVO is a free tool made by Velorien Creative Studio to help you track subscriptions and split shared bills. By using it, you agree to these terms.']),
+    sec('Not financial advice', ['Totals, splits and savings are estimates based on what you enter. Check amounts before paying anyone. QELVO does not give financial, legal or tax advice.']),
+    sec('Payments', ['QELVO doesn’t move money. Any payment happens outside the app, between you and other people, and you’re responsible for it.']),
     sec('Your data', ['Your data is stored on your device. Keep backups. Velorien Creative Studio isn’t responsible for data lost through cleared browser storage, lost devices or deleted backups.']),
-    sec('Logos and names', ['Service names and logos belong to their owners and are shown only to identify each service. Settle is not affiliated with them.']),
-    sec('Fair use', ['Don’t use Settle or its invite links for anything illegal or to harass people.']),
-    sec('As is', ['Settle is provided as is, without warranties. To the extent the law allows, Velorien Creative Studio isn’t liable for losses from using it.']),
-    sec('Changes and contact', ['These terms may be updated, and continuing to use Settle means you accept the new version. Questions: <a href="mailto:hitin@velorienstudiocreative.com">hitin@velorienstudiocreative.com</a>.'])
+    sec('Logos and names', ['Service names and logos belong to their owners and are shown only to identify each service. QELVO is not affiliated with them.']),
+    sec('Fair use', ['Don’t use QELVO or its invite links for anything illegal or to harass people.']),
+    sec('As is', ['QELVO is provided as is, without warranties. To the extent the law allows, Velorien Creative Studio isn’t liable for losses from using it.']),
+    sec('Changes and contact', ['These terms may be updated, and continuing to use QELVO means you accept the new version. Questions: <a href="mailto:hitin@velorienstudiocreative.com">hitin@velorienstudiocreative.com</a>.'])
   ];
   return topbar(P ? 'Privacy policy' : 'Terms of use', 'Last updated November 8, 2026', '', `<a class="iconbtn" href="#you" aria-label="Back">${ICON.back}</a>`) + `<article class="legal">${body.join('')}</article>`;
 }
@@ -1313,7 +1315,7 @@ function vYou(){
   <label class="field"><span>Your first name</span><input type="text" id="nameInput" value="${esc(S.name)}" placeholder="Used in greetings and reminders" autocomplete="given-name"></label>
   <div class="field"><span>Currency</span>${radios('cur', [['USD','US dollar'],['CAD','Canadian dollar']], S.currency)}</div>
   <div class="field"><span>Appearance</span>${radios('theme', [['system','Auto'],['light','Light'],['dark','Dark']], S.theme)}</div>
-  <div class="sec"><h2>Settle smarter</h2></div>
+  <div class="sec"><h2>Smart tools</h2></div>
   <div class="list">
     <button class="row" data-act="notify">${glyph('bell')}<div class="main"><div class="t">Renewal alerts</div><div class="s">A heads-up the day before you’re charged</div></div><span class="st">${notifyStatus()}</span></button>
     <button class="row" data-act="budget">${glyph('sliders')}<div class="main"><div class="t">Monthly budget</div><div class="s">Get warned when subscriptions creep up</div></div><span class="st">${S.budget > 0 ? fmt(S.budget) : 'Not set'}</span></button>
@@ -1338,7 +1340,7 @@ function vYou(){
   </div>
   <div class="sec"><h2>About</h2></div>
   <div class="list">
-    <a class="row" href="#privacy"><div class="main"><div class="t">Privacy policy</div><div class="s">What Settle stores and what it doesn’t</div></div>${ICON.next}</a>
+    <a class="row" href="#privacy"><div class="main"><div class="t">Privacy policy</div><div class="s">What QELVO stores and what it doesn’t</div></div>${ICON.next}</a>
     <a class="row" href="#terms"><div class="main"><div class="t">Terms of use</div><div class="s">The ground rules</div></div>${ICON.next}</a>
   </div>
   <p class="foot">Everything you add stays on this device.</p>
@@ -1352,8 +1354,8 @@ function exportSheet(){
   openSheet('Export to CSV', `<p class="hint" style="margin:0 0 14px">Opens in Excel, Numbers or Google Sheets. Handy for taxes, roommates or your landlord.</p><div class="list"><button class="row" data-x="subs">${glyph('layers')}<div class="main"><div class="t">Subscriptions</div><div class="s">${S.subs.length} rows</div></div></button><button class="row" data-x="exp">${glyph('receipt')}<div class="main"><div class="t">Group expenses</div><div class="s">${S.groups.reduce((a,g) => a + g.expenses.length, 0)} rows</div></div></button></div>`, root => {
     root.addEventListener('click', e => {
       const b = e.target.closest('[data-x]'); if (!b) return;
-      if (b.dataset.x === 'subs') download(`settle-subscriptions-${iso(today())}.csv`, new Blob([toCSV([['Name','Status','Price','Currency','Billing','Next payment','Category','Shared by','Your monthly cost (' + S.currency + ')','Paid with','Website'], ...S.subs.map(s => [s.name, s.status, Number(s.price).toFixed(2), s.cur || S.currency, s.cycle, s.next, s.cat, s.shared || 1, monthly(s).toFixed(2), s.card || '', siteFor(s)])])], { type:'text/csv' }));
-      else { const rows = [['Group','Date','Description','Type','Amount','Paid by','Paid to','Split between','Your share']]; S.groups.forEach(g => g.expenses.forEach(x => rows.push([g.name, x.date, x.desc, x.type, x.amount.toFixed(2), mName(g, x.paidBy), x.to ? mName(g, x.to) : '', x.type === 'payment' ? '' : participants(x).map(id => mName(g, id)).join('; '), x.type === 'payment' ? '' : shareOf(x, 'me').toFixed(2)]))); download(`settle-expenses-${iso(today())}.csv`, new Blob([toCSV(rows)], { type:'text/csv' })); }
+      if (b.dataset.x === 'subs') download(`qelvo-subscriptions-${iso(today())}.csv`, new Blob([toCSV([['Name','Status','Price','Currency','Billing','Next payment','Category','Shared by','Your monthly cost (' + S.currency + ')','Paid with','Website'], ...S.subs.map(s => [s.name, s.status, Number(s.price).toFixed(2), s.cur || S.currency, s.cycle, s.next, s.cat, s.shared || 1, monthly(s).toFixed(2), s.card || '', siteFor(s)])])], { type:'text/csv' }));
+      else { const rows = [['Group','Date','Description','Type','Amount','Paid by','Paid to','Split between','Your share']]; S.groups.forEach(g => g.expenses.forEach(x => rows.push([g.name, x.date, x.desc, x.type, x.amount.toFixed(2), mName(g, x.paidBy), x.to ? mName(g, x.to) : '', x.type === 'payment' ? '' : participants(x).map(id => mName(g, id)).join('; '), x.type === 'payment' ? '' : shareOf(x, 'me').toFixed(2)]))); download(`qelvo-expenses-${iso(today())}.csv`, new Blob([toCSV(rows)], { type:'text/csv' })); }
       toast('CSV saved');
     });
   });
@@ -1379,7 +1381,7 @@ function importSheet(){
       const data = rows.slice(1).filter(r => r[0] && r[1] && !/total balance/i.test(r[1]));
       box.innerHTML = `<label class="field"><span>Group name</span><input type="text" name="gname" value="${esc(file.name.replace(/\.csv$/i, '').replace(/[_-]+/g, ' ').replace(/\d{4}.*$/, '').trim() || 'Imported group')}"></label>
         <div class="field"><span>Which one is you?</span><div class="chips">${names.map((n,i) => `<label class="chip"><input type="radio" name="who" value="${i}" ${i === 0 ? 'checked' : ''}><span>${av(n,'xs')}${esc(n)}</span></label>`).join('')}</div></div>
-        <p class="hint">${data.length} entries found. Settle rebuilds who paid and each person’s share from Splitwise’s totals.</p><button class="btn primary block" type="submit">Import group</button>`;
+        <p class="hint">${data.length} entries found. QELVO rebuilds who paid and each person’s share from Splitwise’s totals.</p><button class="btn primary block" type="submit">Import group</button>`;
       f.onsubmit = e => {
         e.preventDefault();
         const who = +f.querySelector('[name=who]:checked').value, ids = names.map((n,i) => i === who ? 'me' : uid());
@@ -1439,7 +1441,7 @@ const ub64 = s => Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/')), c
 async function bioAvailable(){ try { return !!(window.PublicKeyCredential && await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable()); } catch(e){ return false; } }
 function lockSheet(){
   const on = !!(S.lock && S.lock.pin);
-  openSheet('App lock', `<p class="hint" style="margin:0 0 14px">Stops anyone using your phone from opening Settle. Your data still stays on this device.</p>${on ? `<div class="list"><button class="row" data-lk="bio"><div class="main"><div class="t">${S.lock.cred ? 'Face ID or fingerprint is on' : 'Use Face ID or fingerprint'}</div><div class="s">${S.lock.cred ? 'Tap to turn it off' : 'Unlock without typing your PIN'}</div></div></button><button class="row" data-lk="pin"><div class="main"><div class="t">Change PIN</div></div></button><button class="row" data-lk="off"><div class="main"><div class="t neg-t">Turn off app lock</div></div></button></div>` : `<form id="f"><label class="field"><span>Create a 4-digit PIN</span><input type="password" name="p1" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off"></label><label class="field"><span>Type it again</span><input type="password" name="p2" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off"></label><button class="btn primary block" type="submit">Turn on app lock</button></form>`}`, root => {
+  openSheet('App lock', `<p class="hint" style="margin:0 0 14px">Stops anyone using your phone from opening QELVO. Your data still stays on this device.</p>${on ? `<div class="list"><button class="row" data-lk="bio"><div class="main"><div class="t">${S.lock.cred ? 'Face ID or fingerprint is on' : 'Use Face ID or fingerprint'}</div><div class="s">${S.lock.cred ? 'Tap to turn it off' : 'Unlock without typing your PIN'}</div></div></button><button class="row" data-lk="pin"><div class="main"><div class="t">Change PIN</div></div></button><button class="row" data-lk="off"><div class="main"><div class="t neg-t">Turn off app lock</div></div></button></div>` : `<form id="f"><label class="field"><span>Create a 4-digit PIN</span><input type="password" name="p1" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off"></label><label class="field"><span>Type it again</span><input type="password" name="p2" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off"></label><button class="btn primary block" type="submit">Turn on app lock</button></form>`}`, root => {
     const f = root.querySelector('#f');
     if (f) f.addEventListener('submit', async e => {
       e.preventDefault();
@@ -1455,7 +1457,7 @@ function lockSheet(){
         if (S.lock.cred){ S.lock.cred = null; save(); render(); lockSheet(); toast('Face ID off'); return; }
         if (!(await bioAvailable())){ toast('Face ID isn’t available in this browser'); return; }
         try {
-          const cred = await navigator.credentials.create({ publicKey:{ challenge:crypto.getRandomValues(new Uint8Array(32)), rp:{ name:'Settle' }, user:{ id:crypto.getRandomValues(new Uint8Array(16)), name:'settle', displayName:'Settle' }, pubKeyCredParams:[{ type:'public-key', alg:-7 }, { type:'public-key', alg:-257 }], authenticatorSelection:{ authenticatorAttachment:'platform', userVerification:'required', residentKey:'discouraged' }, timeout:60000 } });
+          const cred = await navigator.credentials.create({ publicKey:{ challenge:crypto.getRandomValues(new Uint8Array(32)), rp:{ name:'QELVO' }, user:{ id:crypto.getRandomValues(new Uint8Array(16)), name:'settle', displayName:'QELVO' }, pubKeyCredParams:[{ type:'public-key', alg:-7 }, { type:'public-key', alg:-257 }], authenticatorSelection:{ authenticatorAttachment:'platform', userVerification:'required', residentKey:'discouraged' }, timeout:60000 } });
           S.lock.cred = b64u(cred.rawId); save(); render(); lockSheet(); toast('Face ID on');
         } catch(err){ toast('Face ID setup was cancelled'); }
       }
@@ -1466,7 +1468,7 @@ let hiddenAt = 0, pinBuf = '', bioFails = 0, pinFails = 0, coolUntil = 0, coolT;
 const MAX_BIO = 5;
 function setLockMode(m){
   const L = $('#lock'); L.dataset.mode = m;
-  L.querySelector('.lt').textContent = m === 'bio' ? 'Settle is locked' : 'Enter your PIN';
+  L.querySelector('.lt').textContent = m === 'bio' ? 'QELVO is locked' : 'Enter your PIN';
   if (m === 'pin') hint(bioFails >= MAX_BIO ? 'Face ID didn’t work. Use your PIN.' : '');
   drawPin();
 }
@@ -1561,7 +1563,7 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 function icsFor(s){
   const d = parse(s.next), ds = `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`;
   const clean = t => String(t).replace(/([,;\\])/g, '\\$1');
-  const lines = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Settle//EN','BEGIN:VEVENT',`UID:${s.id}@settle.app`,`DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').split('.')[0]}Z`,`DTSTART;VALUE=DATE:${ds}`,
+  const lines = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//QELVO//EN','BEGIN:VEVENT',`UID:${s.id}@settle.app`,`DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').split('.')[0]}Z`,`DTSTART;VALUE=DATE:${ds}`,
     `SUMMARY:${clean(`${s.trial ? 'Free trial ends' : 'Renews'}: ${s.name} (${priceText(s)})`)}`, ...(s.trial ? [] : [`RRULE:FREQ=${({ month:'MONTHLY', year:'YEARLY', week:'WEEKLY' })[s.cycle]}`]),
     'BEGIN:VALARM','TRIGGER:-P1D','ACTION:DISPLAY',`DESCRIPTION:${clean(s.name)} charges tomorrow`,'END:VALARM','END:VEVENT','END:VCALENDAR'];
   return lines.join('\r\n');
@@ -1580,7 +1582,7 @@ async function makeCard(){
   const g = x.createRadialGradient(W*.88, 180, 10, W*.88, 180, 760); g.addColorStop(0, 'rgba(124,92,255,.42)'); g.addColorStop(1, 'rgba(124,92,255,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
   sm(W - 140, 250, 560, 'rgba(215,226,234,.07)', 'rgba(124,92,255,.22)');
   sm(108, 118, 56, '#d7e2ea', '#7c5cff', '#d7e2ea');
-  x.textBaseline = 'middle'; x.fillStyle = '#d7e2ea'; x.font = `500 46px ${F}`; sp('-2px'); x.fillText('Settle', 152, 120); sp('0px');
+  x.textBaseline = 'middle'; x.fillStyle = '#d7e2ea'; x.font = `500 46px ${F}`; sp('-2px'); sp('6px'); x.fillText('QELVO', 152, 120); sp('0px');
   const act = activeSubs(), tot = act.reduce((a,s) => a + monthly(s), 0), yr = tot * 12, saved = annualSaving();
   x.fillStyle = '#7c5cff'; x.fillRect(80, 401, 44, 3);
   x.fillStyle = '#8a969d'; x.font = `600 25px ${F}`; sp('6px'); x.fillText(`MY ${today().getFullYear()} IN SUBSCRIPTIONS`, 142, 403); sp('0px');
@@ -1599,7 +1601,7 @@ async function makeCard(){
   box(80, 750, 450, 170, 'Top category', topCat ? topCat[0] : 'None yet');
   box(550, 750, 450, 170, 'Biggest cost', top ? top.name : 'None yet');
   box(80, 940, 920, 170, saved > 0 ? 'Saved by cancelling' : 'Every month', saved > 0 ? `${fmt(saved)} a year` : fmt(tot), saved > 0 ? '#a4d8ff' : '#d7e2ea');
-  x.fillStyle = '#d7e2ea'; x.font = `500 40px ${F}`; x.fillText('Track yours free with Settle', 80, 1222);
+  x.fillStyle = '#d7e2ea'; x.font = `500 40px ${F}`; x.fillText('Track yours free with QELVO', 80, 1222);
   x.fillStyle = '#8a969d'; x.font = `400 27px ${F}`; x.fillText('Built by Velorien Creative Studio', 80, 1272);
   pw(W - 130, 1236, 90, '#d7e2ea', true);
   return new Promise(r => c.toBlob(r, 'image/png'));
@@ -1628,7 +1630,7 @@ async function makeGroupCard(g){
   ex.forEach(e => line(`${e.desc}  ·  ${nm(e.paidBy)}`, fmt(e.amount)));
   dash();
   line('Total spent', fmt(spent(g)), ink, 500);
-  x.textAlign = 'center'; x.fillStyle = mut; x.font = `400 26px ${F}`; x.fillText('Split with Settle', W / 2, H - 30); x.textAlign = 'left';
+  x.textAlign = 'center'; x.fillStyle = mut; x.font = `400 26px ${F}`; x.fillText('Split with QELVO', W / 2, H - 30); x.textAlign = 'left';
   return new Promise(r => c.toBlob(r, 'image/png'));
 }
 function shareGroupSheet(gid){
@@ -1636,13 +1638,13 @@ function shareGroupSheet(gid){
   openSheet('Share the receipt', `<p class="hint" style="margin:0 0 12px">Send it to the group so everyone sees who owes what.</p><img class="cardimg" id="cardImg" style="aspect-ratio:auto" alt="Receipt for ${esc(g.name)}"><div class="btnrow"><button class="btn primary" data-sc="share">Share</button><button class="btn soft" data-sc="save">Save image</button></div>`, async root => {
     const blob = await makeGroupCard(g); if (!blob) return;
     const img = root.querySelector('#cardImg'); if (!img) return; img.src = URL.createObjectURL(blob);
-    const file = new File([blob], 'settle-receipt.png', { type:'image/png' });
+    const file = new File([blob], 'qelvo-receipt.png', { type:'image/png' });
     const can = navigator.canShare && navigator.canShare({ files:[file] });
     const sb = root.querySelector('[data-sc=share]'); if (!can && sb) sb.remove();
     root.addEventListener('click', e => {
       const b = e.target.closest('[data-sc]'); if (!b) return;
       if (b.dataset.sc === 'share') navigator.share({ files:[file], text:`${g.name}: who owes what` }).catch(() => {});
-      else { download('settle-receipt.png', blob); toast('Image saved'); }
+      else { download('qelvo-receipt.png', blob); toast('Image saved'); }
     });
   });
 }
@@ -1650,13 +1652,13 @@ function shareCardSheet(){
   openSheet('Your year card', `<p class="hint" style="margin:0 0 12px">Post it, send it, or keep it as a reminder.</p><img class="cardimg" id="cardImg" alt="Card showing your yearly subscription spending"><div class="btnrow"><button class="btn primary" data-sc="share">Share</button><button class="btn soft" data-sc="save">Save image</button></div>`, async root => {
     const blob = await makeCard(); if (!blob) return;
     const img = root.querySelector('#cardImg'); if (!img) return; img.src = URL.createObjectURL(blob);
-    const file = new File([blob], 'settle-year.png', { type:'image/png' });
+    const file = new File([blob], 'qelvo-year.png', { type:'image/png' });
     const can = navigator.canShare && navigator.canShare({ files:[file] });
     const sb = root.querySelector('[data-sc=share]'); if (!can && sb) sb.remove();
     root.addEventListener('click', e => {
       const b = e.target.closest('[data-sc]'); if (!b) return;
-      if (b.dataset.sc === 'share') navigator.share({ files:[file], text:'My year in subscriptions, tracked with Settle' }).then(() => award('sharer')).catch(() => {});
-      else { download('settle-year.png', blob); award('sharer'); toast('Image saved'); }
+      if (b.dataset.sc === 'share') navigator.share({ files:[file], text:'My year in subscriptions, tracked with QELVO' }).then(() => award('sharer')).catch(() => {});
+      else { download('qelvo-year.png', blob); award('sharer'); toast('Image saved'); }
     });
   });
 }
@@ -1673,20 +1675,20 @@ function rateSheet(){
   const act = activeSubs();
   if (!act.length){ toast('Add a subscription first'); return; }
   const opts = [['love','Love it'],['meh','It’s okay'],['rarely','Rarely use']];
-  openSheet('Worth it?', `<form id="f"><p class="hint" style="margin:0 0 6px">Be honest. Settle uses this to point out easy savings.</p>${act.map(s => `<div class="rate"><div class="rh">${subAv(s,'xs')}${esc(s.name)}<span style="margin-left:auto;color:var(--muted);font-size:13px">${fmt(monthly(s))}/mo</span></div><div class="seg full">${opts.map(([k,l]) => `<label><input type="radio" name="w_${s.id}" value="${k}" ${s.worth===k?'checked':''}><span>${l}</span></label>`).join('')}</div></div>`).join('')}<button class="btn primary block" type="submit" style="margin-top:14px">Save ratings</button></form>`, root => {
+  openSheet('Worth it?', `<form id="f"><p class="hint" style="margin:0 0 6px">Be honest. QELVO uses this to point out easy savings.</p>${act.map(s => `<div class="rate"><div class="rh">${subAv(s,'xs')}${esc(s.name)}<span style="margin-left:auto;color:var(--muted);font-size:13px">${fmt(monthly(s))}/mo</span></div><div class="seg full">${opts.map(([k,l]) => `<label><input type="radio" name="w_${s.id}" value="${k}" ${s.worth===k?'checked':''}><span>${l}</span></label>`).join('')}</div></div>`).join('')}<button class="btn primary block" type="submit" style="margin-top:14px">Save ratings</button></form>`, root => {
     const f = root.querySelector('#f');
     f.addEventListener('submit', e => { e.preventDefault(); act.forEach(s => { const r = f.querySelector(`[name="w_${s.id}"]:checked`); if (r) s.worth = r.value; }); done('Ratings saved'); });
   });
 }
 function restoreSheet(){
   openSheet('Restore from a backup', `<form id="f"><label class="field"><span>Choose a backup file</span><input type="file" name="file" accept="application/json,.json"></label>
-    <label class="field"><span>Or paste your backup</span><textarea name="bk" placeholder="Paste the text you copied with “Copy a backup”"></textarea></label><p class="hint">This replaces everything currently in Settle.</p><button class="btn primary block" type="submit">Restore</button></form>`, root => {
+    <label class="field"><span>Or paste your backup</span><textarea name="bk" placeholder="Paste the text you copied with “Copy a backup”"></textarea></label><p class="hint">This replaces everything currently in QELVO.</p><button class="btn primary block" type="submit">Restore</button></form>`, root => {
     const f = root.querySelector('#f');
     f.file.addEventListener('change', () => { const file = f.file.files[0]; if (file) file.text().then(t => { f.bk.value = t; }); });
     f.addEventListener('submit', e => {
       e.preventDefault();
       try { const d = JSON.parse(f.bk.value); if (!Array.isArray(d.subs) || !Array.isArray(d.groups)) throw 0; const snap = snapshot(); S = Object.assign(fresh(), d, { onboarded:true }); applyTheme(); shownTotal = 0; tapePlayed = false; done('Backup restored', snap); }
-      catch(err){ toast('That doesn’t look like a Settle backup'); }
+      catch(err){ toast('That doesn’t look like a QELVO backup'); }
     });
   });
 }
@@ -1891,7 +1893,7 @@ function subSheet(id){
         <label class="field"><span>Category</span><select name="cat">${CATS.map(c => `<option ${v.cat===c?'selected':''}>${c}</option>`).join('')}</select></label>
       </div>
       <label class="field"><span>Website, for the logo</span><input type="text" name="site" value="${esc(v.site || siteFor(v))}" placeholder="crave.ca" autocapitalize="off" autocomplete="off" inputmode="url"></label>
-      <label class="switch"><input type="checkbox" name="trial" ${v.trial ? 'checked' : ''}><span class="sw"></span><span class="sl"><b>Free trial</b><small>The date above is when the trial ends. Settle warns you before.</small></span></label>
+      <label class="switch"><input type="checkbox" name="trial" ${v.trial ? 'checked' : ''}><span class="sw"></span><span class="sl"><b>Free trial</b><small>The date above is when the trial ends. QELVO warns you before.</small></span></label>
       <div class="field"><span>Worth it?</span><div class="seg full">${worth.map(([k,l]) => `<label><input type="radio" name="worth" value="${k}" ${v.worth===k?'checked':''}><span>${l}</span></label>`).join('')}</div></div>
       <button class="btn primary block" type="submit">${s ? 'Save changes' : 'Add subscription'}</button>
       ${s ? `<div class="btnrow"><a class="btn soft" href="${cancelURL(s)}" target="_blank" rel="noopener">How to cancel</a><button type="button" class="btn soft" data-sub="ics">Add to calendar</button></div>
@@ -1936,7 +1938,7 @@ function subSheet(id){
       if (!lgBox) return; const g = S.groups.find(x => x.id === f.lg.value);
       if (!g){ lgBox.innerHTML = ''; f.shared.disabled = false; return; }
       const sel = v.link && v.link.gid === g.id ? v.link.m : g.members.map(m => m.id);
-      lgBox.innerHTML = `<p class="hint" style="margin:8px 0">Each time it renews, Settle adds it to ${esc(g.name)} as an expense you paid, split between:</p><div class="chips">${g.members.map(m => `<label class="chip"><input type="checkbox" name="lm" value="${m.id}" ${sel.includes(m.id) || m.id === 'me' ? 'checked' : ''} ${m.id === 'me' ? 'disabled' : ''}><span>${av(mName(g,m.id),'xs')}${esc(mName(g,m.id))}</span></label>`).join('')}</div>${v.link && v.link.gid === g.id ? '' : '<label class="switch" style="margin-top:12px"><input type="checkbox" name="lnow" checked><span class="sw"></span><span class="sl"><b>Add this period’s charge now</b><small>Otherwise it starts on the next payment date.</small></span></label>'}`;
+      lgBox.innerHTML = `<p class="hint" style="margin:8px 0">Each time it renews, QELVO adds it to ${esc(g.name)} as an expense you paid, split between:</p><div class="chips">${g.members.map(m => `<label class="chip"><input type="checkbox" name="lm" value="${m.id}" ${sel.includes(m.id) || m.id === 'me' ? 'checked' : ''} ${m.id === 'me' ? 'disabled' : ''}><span>${av(mName(g,m.id),'xs')}${esc(mName(g,m.id))}</span></label>`).join('')}</div>${v.link && v.link.gid === g.id ? '' : '<label class="switch" style="margin-top:12px"><input type="checkbox" name="lnow" checked><span class="sw"></span><span class="sl"><b>Add this period’s charge now</b><small>Otherwise it starts on the next payment date.</small></span></label>'}`;
       f.shared.disabled = true;
     };
     if (f.lg){ f.lg.addEventListener('change', drawLink); drawLink(); }
@@ -2072,7 +2074,7 @@ function expenseSheet(gid, xid){
     </div>
     <div class="each" id="each"></div>
     <label class="field"><span>Receipt photo</span><input type="file" name="photo" accept="image/*">${x0 && x0.photo ? '<small class="hint" style="display:block;margin:6px 0 0">A photo is attached. Choose a new one to replace it.</small>' : ''}</label>
-    <label class="switch"><input type="checkbox" name="repeat" ${x0 && x0.repeat ? 'checked' : ''}><span class="sw"></span><span class="sl"><b>Repeats every month</b><small>For rent, internet or hydro. Settle adds it again each month.</small></span></label>
+    <label class="switch"><input type="checkbox" name="repeat" ${x0 && x0.repeat ? 'checked' : ''}><span class="sw"></span><span class="sl"><b>Repeats every month</b><small>For rent, internet or hydro. QELVO adds it again each month.</small></span></label>
     <button class="btn primary block" type="submit">${x0 ? 'Save changes' : 'Add expense'}</button>
   </form>`;
   openSheet(x0 ? 'Edit expense' : `Add to ${g.name}`, body, root => {
@@ -2240,7 +2242,7 @@ const actions = {
   trashOpen: () => trashSheet(),
   exportCSV: () => exportSheet(),
   importSW: () => importSheet(),
-  backupFile: () => { download(`settle-backup-${iso(today())}.json`, new Blob([JSON.stringify(S)], { type:'application/json' })); S.lastBackup = iso(today()); save(); render(); toast('Backup saved'); },
+  backupFile: () => { download(`qelvo-backup-${iso(today())}.json`, new Blob([JSON.stringify(S)], { type:'application/json' })); S.lastBackup = iso(today()); save(); render(); toast('Backup saved'); },
   snooze: () => { S.snooze = Date.now() + 3 * 864e5; save(); render(); },
   addMenu: () => addMenu(),
   pull: (id, el) => { const to = el.getAttribute('href').slice(1); if (reduceMotion){ location.hash = to; return; } el.classList.add('pull'); buzz(8); setTimeout(() => { location.hash = to; }, 170); },
@@ -2277,8 +2279,8 @@ const actions = {
     if (!g.sid){ g.sid = uid(); save(); }
     const payload = { v:1, sid:g.sid, n:g.name, e:gEmoji(g), from:S.name || 'A friend', m:g.members.map(m => [m.id, m.id === 'me' ? (S.name || 'Friend') : m.name]), x:g.expenses };
     const link = location.origin + location.pathname + '?join=' + await encZ(payload);
-    const text = `Join “${g.name}” on Settle so we can keep track of who owes what.`;
-    if (navigator.share) navigator.share({ title:'Join my group on Settle', text, url:link }).then(() => award('inviter')).catch(() => {});
+    const text = `Join “${g.name}” on QELVO so we can keep track of who owes what.`;
+    if (navigator.share) navigator.share({ title:'Join my group on QELVO', text, url:link }).then(() => award('inviter')).catch(() => {});
     else if (navigator.clipboard) navigator.clipboard.writeText(`${text} ${link}`).then(() => { toast('Invite link copied'); award('inviter'); }, () => toast('Couldn’t copy the invite link'));
   },
   addSub: () => subSheet(),

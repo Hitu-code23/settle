@@ -1566,13 +1566,13 @@ function saveLocal(){ pulling = true; try { save(); } finally { pulling = false;
 
 /* Anonymous usage counts: a random device code + what happened. No names, emails or amounts. */
 const VID = (() => { try { let v = localStorage.getItem('qelvo.vid'); if (!v){ v = uid() + uid() + uid(); localStorage.setItem('qelvo.vid', v); } return v; } catch(e){ return 'anon' + uid() + uid(); } })();
-function track(kind){
+function track(kind, n){
   if (location.protocol === 'file:' || /^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return;
   try {
     let ref = ''; try { ref = document.referrer ? new URL(document.referrer).hostname.slice(0, 80) : ''; } catch(e){}
     if (ref === location.hostname) ref = '';
     fetch(SB_URL + '/rest/v1/events', { method:'POST', keepalive:true, headers:{ apikey:SB_KEY, Authorization:'Bearer ' + SB_KEY, 'Content-Type':'application/json', Prefer:'return=minimal' },
-      body:JSON.stringify({ vid:VID, kind, standalone:isStandalone(), platform:isIOS ? 'ios' : /android/i.test(navigator.userAgent) ? 'android' : 'desktop', ref }) }).catch(() => {});
+      body:JSON.stringify({ vid:VID, kind, n:(typeof n === 'number' ? Math.max(0, Math.min(500, n)) : null), standalone:isStandalone(), platform:isIOS ? 'ios' : /android/i.test(navigator.userAgent) ? 'android' : 'desktop', ref }) }).catch(() => {});
   } catch(e){}
 }
 window.addEventListener('appinstalled', () => track('install'));
@@ -2555,19 +2555,19 @@ const actions = {
   snooze: () => { S.snooze = Date.now() + 3 * 864e5; save(); render(); },
   addMenu: () => addMenu(),
   pull: (id, el) => { const to = el.getAttribute('href').slice(1); if (reduceMotion){ location.hash = to; return; } el.classList.add('pull'); buzz(8); setTimeout(() => { location.hash = to; }, 170); },
-  obNext: () => { obStep = Math.min(2, obStep + 1); render(true); window.scrollTo(0,0); },
+  obNext: () => { if (obStep === 0) track('ob_start'); obStep = Math.min(2, obStep + 1); render(true); window.scrollTo(0,0); },
   obPick: (id, el) => {
     const i = +id; obPicked.has(i) ? obPicked.delete(i) : obPicked.add(i); el.setAttribute('aria-pressed', obPicked.has(i)); buzz(8);
     const tot = PRESETS.filter((p,k) => obPicked.has(k)).reduce((a,p) => a + presetPrice(p), 0);
     $('#obCount').textContent = `${obPicked.size} picked`; $('#obTot').textContent = `about ${fmt(tot)} a month`;
   },
-  obSplit: () => { S.onboarded = true; obStep = 0; save(); location.hash = 'split'; render(true); },
+  obSplit: () => { track('ob_split'); S.onboarded = true; obStep = 0; save(); location.hash = 'split'; render(true); },
   obFinish: () => {
     const n = $('#obName'), c = document.querySelector('[name=obCur]:checked');
     if (n) S.name = n.value.trim(); if (c) S.currency = c.value;
     const nx = today(); nx.setDate(nx.getDate() + 30);
     [...obPicked].forEach(i => { const [nm,,cat] = PRESETS[i], pr = presetPrice(PRESETS[i]); S.subs.push({ id:uid(), cur:S.currency, name:nm, price:pr, cycle:'month', next:iso(nx), day:nx.getDate(), cat, shared:1, status:'active', needsDate:true }); });
-    obPicked = new Set(); obStep = 3; save(); render(true); window.scrollTo(0,0);
+    track('ob_done', obPicked.size); obPicked = new Set(); obStep = 3; save(); render(true); window.scrollTo(0,0);
   },
   obDone: () => { S.onboarded = true; obStep = 0; tapePlayed = false; shownTotal = 0; save(); location.hash = 'home'; render(true); },
   budget: () => budgetSheet(),
@@ -2617,7 +2617,7 @@ const actions = {
   install: () => { if (!deferredPrompt) return; deferredPrompt.prompt(); deferredPrompt.userChoice.finally(() => { deferredPrompt = null; render(); }); },
   sample: (id, el) => {
     if ((S.subs.length || S.groups.length) && !el.dataset.armed){ el.dataset.armed = '1'; const t = el.querySelector('.s'); if (t) t.textContent = 'Tap again to replace your data'; return; }
-    sampleData(); S.onboarded = true; obStep = 0; checkBadges(true); tapePlayed = false; shownTotal = 0; save(); location.hash = 'home'; render(); toast('Sample data loaded');
+    track('sample'); sampleData(); S.onboarded = true; obStep = 0; checkBadges(true); tapePlayed = false; shownTotal = 0; save(); location.hash = 'home'; render(); toast('Sample data loaded');
   },
   erase: (id, el) => {
     if (!el.dataset.armed){ el.dataset.armed = '1'; const t = el.querySelector('.s'); if (t) t.textContent = 'Tap again to erase. This can’t be undone.'; return; }

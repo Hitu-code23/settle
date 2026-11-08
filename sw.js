@@ -1,7 +1,7 @@
 // Settle service worker: offline support
-const CACHE = 'settle-v2';
-const EXT = 'settle-ext-v1';
-const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
+const CACHE = 'settle-v3';
+const EXT = 'settle-ext-v2';
+const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './catalog.json'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).catch(() => {}));
@@ -22,13 +22,18 @@ self.addEventListener('fetch', e => {
       .catch(() => caches.match('./index.html').then(r => r || caches.match('./'))));
     return;
   }
+  // Brand list: refresh in the background
+  if (url.origin === self.location.origin && url.pathname.endsWith('catalog.json')){
+    e.respondWith(caches.open(CACHE).then(c => c.match(req).then(hit => { const net = fetch(req).then(res => { c.put(req, res.clone()); return res; }).catch(() => hit); return hit || net; })));
+    return;
+  }
   // Same-site files: saved copy first
   if (url.origin === self.location.origin){
     e.respondWith(caches.match(req).then(r => r || fetch(req).then(res => { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); return res; })));
     return;
   }
   // Fonts and logos: show the saved copy, refresh it in the background
-  if (/fonts\.(googleapis|gstatic)\.com|google\.com\/s2\/favicons/.test(req.url)){
+  if (/fonts\.(googleapis|gstatic)\.com|google\.com\/s2\/favicons|cdn\.simpleicons\.org/.test(req.url)){
     e.respondWith(caches.open(EXT).then(c => c.match(req).then(hit => {
       const net = fetch(req).then(res => { c.put(req, res.clone()); return res; }).catch(() => hit);
       return hit || net;

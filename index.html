@@ -311,6 +311,7 @@ try {
     var vid = localStorage.getItem('qelvo.vid');
     if (!vid){ vid = Math.random().toString(36).slice(2, 12) + Math.random().toString(36).slice(2, 12); localStorage.setItem('qelvo.vid', vid); }
     var ref = ''; try { ref = document.referrer ? new URL(document.referrer).hostname.slice(0, 80) : ''; } catch(e){}
+    var src = new URLSearchParams(location.search).get('from'); if (src) ref = src.replace(/[^a-z0-9._-]/gi, '').slice(0, 80);
     var ua = navigator.userAgent;
     fetch('https://wmtlhpfmweedqvltopqr.supabase.co/rest/v1/events', { method:'POST', keepalive:true, headers:{ apikey:'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtdGxocGZtd2VlZHF2bHRvcHFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQwNjAyODcsImV4cCI6MjEwOTYzNjI4N30.O_ZSrxj3mz9Rs0rxZEvqc9tQbBdbuqRCp2yi02WkkGo', Authorization:'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtdGxocGZtd2VlZHF2bHRvcHFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQwNjAyODcsImV4cCI6MjEwOTYzNjI4N30.O_ZSrxj3mz9Rs0rxZEvqc9tQbBdbuqRCp2yi02WkkGo', 'Content-Type':'application/json', Prefer:'return=minimal' },
       body:JSON.stringify({ vid:vid, kind:'landing', standalone:false, platform:/iphone|ipad|ipod/i.test(ua) ? 'ios' : /android/i.test(ua) ? 'android' : 'desktop', ref:ref }) }).catch(function(){});

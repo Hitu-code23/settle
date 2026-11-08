@@ -1,6 +1,6 @@
 // Settle service worker: offline support
-const CACHE = 'settle-v3';
-const EXT = 'settle-ext-v2';
+const CACHE = 'settle-v4';
+const EXT = 'settle-ext-v3';
 const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './catalog.json'];
 
 self.addEventListener('install', e => {
@@ -33,7 +33,7 @@ self.addEventListener('fetch', e => {
     return;
   }
   // Fonts and logos: show the saved copy, refresh it in the background
-  if (/fonts\.(googleapis|gstatic)\.com|google\.com\/s2\/favicons|cdn\.simpleicons\.org/.test(req.url)){
+  if (/fonts\.(googleapis|gstatic)\.com|google\.com\/s2\/favicons|cdn\.simpleicons\.org|cdn\.jsdelivr\.net\/npm\/@supabase/.test(req.url)){
     e.respondWith(caches.open(EXT).then(c => c.match(req).then(hit => {
       const net = fetch(req).then(res => { c.put(req, res.clone()); return res; }).catch(() => hit);
       return hit || net;

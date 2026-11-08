@@ -602,6 +602,8 @@ main,.sheet{zoom:var(--tz,1)}
 .biobtn svg{width:52px;height:52px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
 .biolbl{font-size:14px;color:var(--muted)}
 .lhint{min-height:20px;font-size:13.5px;color:var(--muted);text-align:center;max-width:280px}
+[hidden]{display:none!important}
+.lock[hidden]{display:none!important}
 </style>
 </head>
 <body>
@@ -776,7 +778,8 @@ const guess = (rules, txt, fallback) => (rules.find(([re]) => re.test(txt || '')
 const KEY = 'settle.app.v1';
 const fresh = () => ({ name:'', currency:'USD', theme:'dark', subs:[], groups:[], budget:0, onboarded:false, badges:{}, notify:false, notifyDay:'', rate:1.37, trash:[], textSize:1 });
 function load(){ try { const r = localStorage.getItem(KEY); if (r) return Object.assign(fresh(), JSON.parse(r)); } catch(e){} return fresh(); }
-function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} }
+var sb = null, cloudUser = null, pulling = false;
+function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} if (cloudUser && !pulling && typeof scheduleSync === 'function') scheduleSync(); }
 let S = load();
 const snapshot = () => JSON.stringify(S);
 const restore = snap => { S = JSON.parse(snap); save(); render(); };
@@ -1258,6 +1261,7 @@ function setupInstall(){
 }
 function safetyCard(){
   if (!S.subs.length && !S.groups.length) return '';
+  if (cloudUser) return '';
   const stale = !S.lastBackup || daysUntil(S.lastBackup) < -30;
   if (isStandalone()){
     if (!stale || (S.snooze && S.snooze > Date.now())) return '';
@@ -1265,7 +1269,7 @@ function safetyCard(){
   }
   if (S.snooze && S.snooze > Date.now()) return '';
   const how = deferredPrompt ? '' : isIOS ? ' Tap Share, then Add to Home Screen.' : ' Use your browser menu and choose Install app.';
-  return `<div class="alert warn">${glyph('bell')}<div><div class="t">Keep your data safe</div><div class="s">${isIOS ? 'Safari can clear website data you haven’t opened in a while. Add QELVO to your Home Screen to keep it.' : 'Install QELVO so your data stays put and it opens like a real app.'}${how}</div><div class="acts">${deferredPrompt ? '<button class="btn small soft" data-act="install">Install app</button>' : ''}<button class="btn small soft" data-act="backupFile">Save backup</button><button class="btn small ghost" data-act="snooze">Later</button></div></div></div>`;
+  return `<div class="alert warn">${glyph('bell')}<div><div class="t">Keep your data safe</div><div class="s">${isIOS ? 'Safari can clear website data you haven’t opened in a while. Add QELVO to your Home Screen to keep it.' : 'Install QELVO so your data stays put and it opens like a real app.'}${how}</div><div class="acts">${sb ? '<button class="btn small soft" data-act="signIn">Sign in to sync</button>' : ''}${deferredPrompt ? '<button class="btn small soft" data-act="install">Install app</button>' : ''}<button class="btn small soft" data-act="backupFile">Save backup</button><button class="btn small ghost" data-act="snooze">Later</button></div></div></div>`;
 }
 function installCard(){
   if (isStandalone()) return '';
@@ -1280,8 +1284,9 @@ function vLegal(kind){
   const P = kind === 'privacy';
   const sec = (t, ps) => `<h2>${t}</h2>${ps.map(x => `<p>${x}</p>`).join('')}`;
   const body = P ? [
-    sec('The short version', ['QELVO keeps your data on your own device. There’s no account, no server holding your information, and no ads. Velorien Creative Studio can’t see what you enter.']),
-    sec('What QELVO stores', ['The subscriptions, groups, expenses, names and settings you enter are saved in your browser’s storage on this device only. Clearing your browser data or using “Erase everything” deletes them.']),
+    sec('The short version', ['Without an account, QELVO keeps everything on your device. If you sign in to sync, your subscriptions, groups and expenses are stored in a secure database in Canada so they sync across your devices and with your group. There are no ads, and your data is never sold.']),
+    sec('If you sign in', ['Your email address is used only to sign you in. Synced data is stored with Supabase in Canada, protected by rules that let only you see your subscriptions and only a group’s members see that group. Receipt photos and your app lock stay on your device. To delete your account and synced data, email us.']),
+    sec('What QELVO stores', ['The subscriptions, groups, expenses, names and settings you enter are saved in your browser’s storage on this device, and also in your synced account if you sign in. Clearing your browser data or using “Erase everything” deletes them.']),
     sec('What leaves your device', ['Invite links: when you share a group, the link contains that group’s name, member names and expenses. Anyone with the link can read them, so only send it to people in the group.', 'Service logos: to show logos, QELVO asks Google’s favicon service for the icon of a service’s website, like netflix.com. Your amounts and names are not sent.', 'Fonts are loaded from Google Fonts. Like any website request, these providers can see basic technical details such as your IP address.']),
     sec('Notifications', ['Renewal alerts are created on your device. They are only turned on if you allow them, and you can turn them off anytime.']),
     sec('Photos, payments and app lock', ['Receipt photos you attach are stored only on this device. Payment buttons open PayPal or Venmo with the amount filled in; QELVO never sees or handles your money. App lock uses a PIN saved as a one-way code, plus your phone’s own Face ID or fingerprint check, which never shares your face or fingerprint with QELVO.']),
@@ -1311,6 +1316,7 @@ function vYou(){
   const hasData = S.subs.length || S.groups.length;
   const earned = BADGES.filter(b => S.badges && S.badges[b[0]]).length;
   return topbar('You', 'Preferences') + `
+  ${accountHTML()}
   ${installCard()}
   <label class="field"><span>Your first name</span><input type="text" id="nameInput" value="${esc(S.name)}" placeholder="Used in greetings and reminders" autocomplete="given-name"></label>
   <div class="field"><span>Currency</span>${radios('cur', [['USD','US dollar'],['CAD','Canadian dollar']], S.currency)}</div>
@@ -1426,7 +1432,7 @@ function trashSheet(){
       if (b){
         const t = S.trash.find(x => x.id === b.dataset.rs); if (!t) return;
         if (t.kind === 'sub'){ if (!S.subs.some(s => s.id === t.item.id)) S.subs.push(t.item); }
-        else if (t.kind === 'group'){ if (!S.groups.some(g => g.id === t.item.id)) S.groups.unshift(t.item); }
+        else if (t.kind === 'group'){ t.item.cloud = false; if (!S.groups.some(g => g.id === t.item.id)) S.groups.unshift(t.item); }
         else { const g = S.groups.find(x => x.id === t.gid); if (!g){ toast('Its group was deleted. Restore the group first.'); return; } if (!g.expenses.some(x => x.id === t.item.id)) g.expenses.push(t.item); }
         S.trash = S.trash.filter(x => x.id !== t.id); save(); render(); toast('Restored'); trashSheet(); return;
       }
@@ -1514,6 +1520,218 @@ $('#lock').addEventListener('click', async e => {
   }
 });
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') hiddenAt = Date.now(); else if (hiddenAt && Date.now() - hiddenAt > 60000) showLock(); });
+
+/* ---------- Cloud sync (Supabase) ---------- */
+const SB_URL = 'https://wmtlhpfmweedqvltopqr.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndtdGxocGZtd2VlZHF2bHRvcHFyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQwNjAyODcsImV4cCI6MjEwOTYzNjI4N30.O_ZSrxj3mz9Rs0rxZEvqc9tQbBdbuqRCp2yi02WkkGo';
+const SB_JS = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.3/dist/umd/supabase.js';
+let rtChan = null, syncT = null, remoteT = null, lastSync = 0, syncState = 'idle', syncChain = Promise.resolve();
+const SYNC_KEY = 'qelvo.sync';
+const freshMeta = () => ({ uid:'', p:'', g:{}, x:{}, xg:{}, own:{} });
+let SM = (() => { try { return Object.assign(freshMeta(), JSON.parse(localStorage.getItem(SYNC_KEY) || '{}')); } catch(e){ return freshMeta(); } })();
+const saveSM = () => { try { localStorage.setItem(SYNC_KEY, JSON.stringify(SM)); } catch(e){} };
+const stable = v => Array.isArray(v) ? '[' + v.map(stable).join(',') + ']' : v && typeof v === 'object' ? '{' + Object.keys(v).filter(k => v[k] !== undefined).sort().map(k => JSON.stringify(k) + ':' + stable(v[k])).join(',') + '}' : JSON.stringify(v === undefined ? null : v);
+const hashOf = o => { const s = stable(o); let h = 0; for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return h.toString(36) + ':' + s.length; };
+const queueSync = fn => (syncChain = syncChain.then(fn).catch(err => { console.warn('sync', err); setSyncState('error'); }));
+const syncLabel = () => syncState === 'error' ? 'Couldn’t sync, will retry' : syncState === 'busy' ? 'Syncing…' : lastSync ? `Synced at ${new Date(lastSync).toLocaleTimeString([], { hour:'numeric', minute:'2-digit' })}` : 'Signed in';
+function setSyncState(s){ syncState = s; const el = document.getElementById('syncStatus'); if (el) el.textContent = syncLabel(); }
+const personal = () => ({ subs:S.subs, name:S.name, currency:S.currency, rate:S.rate, budget:S.budget, badges:S.badges, onboarded:S.onboarded, theme:S.theme, textSize:S.textSize });
+const cm = m => ({ id:m.id, name:m.name, uid:m.uid || null, pay:m.pay || null });
+const myName = () => S.name || (cloudUser && cloudUser.email ? cloudUser.email.split('@')[0] : 'Friend');
+const srvMembers = g => g.members.map(m => m.id === 'me' ? cm({ id:g.myId, name:S.name || g.myName || myName(), uid:cloudUser.id, pay:m.pay }) : cm(m));
+function mapIds(x, from, to){ const f = v => v === from ? to : v; const y = JSON.parse(JSON.stringify(x)); if (y.paidBy) y.paidBy = f(y.paidBy); if (y.to) y.to = f(y.to); if (y.split) y.split = y.split.map(f); if (y.shares){ const s = {}; Object.keys(y.shares).forEach(k => s[f(k)] = y.shares[k]); y.shares = s; } return y; }
+function srvExp(g, x){ const y = mapIds(x, 'me', g.myId); delete y.photo; return y; }
+const gmeta = (name, emoji, members) => ({ name, emoji:emoji || null, members:members.map(cm) });
+function saveLocal(){ pulling = true; try { save(); } finally { pulling = false; } }
+
+function loadCloud(){
+  if (sb || location.protocol === 'file:') return;
+  const s = document.createElement('script'); s.src = SB_JS; s.async = true; s.crossOrigin = 'anonymous';
+  s.onload = cloudInit; document.head.appendChild(s);
+}
+function cloudInit(){
+  if (!window.supabase || !supabase.createClient) return;
+  try { sb = supabase.createClient(SB_URL, SB_KEY, { auth:{ persistSession:true, autoRefreshToken:true, detectSessionInUrl:true } }); } catch(e){ sb = null; return; }
+  sb.auth.onAuthStateChange((ev, session) => {
+    const was = cloudUser; cloudUser = session ? session.user : null;
+    if (cloudUser && (!was || was.id !== cloudUser.id)) setTimeout(startSync, 0);
+    if (!cloudUser && was) stopSync();
+    if (wrap.hidden && ['you','home',''].includes(location.hash.slice(1))) render();
+  });
+}
+function startSync(){
+  if (!cloudUser) return;
+  queueSync(async () => {
+    setSyncState('busy');
+    if (SM.uid !== cloudUser.id) await firstMerge();
+    await pushAll(); await pullAll();
+    setSyncState('idle');
+    const pj = sessionStorage.getItem('qelvo.join');
+    if (pj){ sessionStorage.removeItem('qelvo.join'); const [g, c] = pj.split('|'); cloudJoinSheet(g, c); }
+  });
+  if (rtChan) sb.removeChannel(rtChan);
+  rtChan = sb.channel('qelvo-' + cloudUser.id)
+    .on('postgres_changes', { event:'*', schema:'public', table:'expenses' }, onRemote)
+    .on('postgres_changes', { event:'*', schema:'public', table:'groups' }, onRemote)
+    .on('postgres_changes', { event:'*', schema:'public', table:'group_members' }, onRemote)
+    .subscribe();
+}
+function stopSync(){ if (rtChan && sb){ sb.removeChannel(rtChan); rtChan = null; } }
+function onRemote(){ clearTimeout(remoteT); remoteT = setTimeout(() => queueSync(() => pullAll(true)), 600); }
+function scheduleSync(){ if (!cloudUser || pulling) return; clearTimeout(syncT); syncT = setTimeout(() => queueSync(async () => { setSyncState('busy'); await pushAll(); setSyncState('idle'); }), 900); }
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && cloudUser) queueSync(async () => { await pushAll(); await pullAll(); setSyncState('idle'); }); });
+
+async function firstMerge(){
+  SM = freshMeta(); SM.uid = cloudUser.id;
+  S.groups.forEach(g => { g.cloud = false; });
+  const { data, error } = await sb.from('user_state').select('data').eq('user_id', cloudUser.id).maybeSingle();
+  if (error) throw error;
+  const c = data && data.data;
+  if (c && Array.isArray(c.subs)){
+    const ids = new Set(c.subs.map(s => s.id));
+    S.subs = [...c.subs, ...S.subs.filter(s => !ids.has(s.id))];
+    S.badges = Object.assign({}, c.badges || {}, S.badges || {});
+    if (!S.name && c.name) S.name = c.name;
+    if (!(S.budget > 0) && c.budget > 0) S.budget = c.budget;
+    S.onboarded = S.onboarded || !!c.onboarded;
+  }
+  saveSM(); saveLocal();
+}
+
+async function pushAll(){
+  if (!cloudUser) return;
+  const me = cloudUser.id;
+  const P = personal(), ph = hashOf(P);
+  if (ph !== SM.p){ const { error } = await sb.from('user_state').upsert({ user_id:me, data:P }); if (error) throw error; SM.p = ph; }
+  for (const g of S.groups){
+    if (!g.myId) g.myId = uid();
+    if (!g.cloud){
+      const ins = await sb.from('groups').insert({ id:g.id, name:g.name, emoji:gEmoji(g), members:srvMembers(g) }).select('invite_code').single();
+      if (ins.error && ins.error.code !== '23505') throw ins.error;
+      if (!ins.error){
+        const m = await sb.from('group_members').insert({ group_id:g.id, user_id:me, member_id:g.myId });
+        if (m.error && m.error.code !== '23505') throw m.error;
+        g.code = ins.data.invite_code; SM.own[g.id] = true;
+        SM.g[g.id] = hashOf(gmeta(g.name, gEmoji(g), srvMembers(g)));
+      }
+      g.cloud = true;
+    }
+    const mh = hashOf(gmeta(g.name, gEmoji(g), srvMembers(g)));
+    if (SM.g[g.id] !== mh){ const { error } = await sb.from('groups').update({ name:g.name, emoji:gEmoji(g), members:srvMembers(g) }).eq('id', g.id); if (error) throw error; SM.g[g.id] = mh; }
+    const live = new Set(), batch = [];
+    g.expenses.forEach(x => { live.add(x.id); const sx = srvExp(g, x), xh = hashOf(sx); if (SM.x[x.id] !== xh) batch.push([{ id:x.id, group_id:g.id, data:sx, deleted:false }, xh]); });
+    for (let i = 0; i < batch.length; i += 200){
+      const part = batch.slice(i, i + 200);
+      const { error } = await sb.from('expenses').upsert(part.map(b => b[0])); if (error) throw error;
+      part.forEach(([row, xh]) => { SM.x[row.id] = xh; SM.xg[row.id] = g.id; });
+    }
+    const gone = Object.keys(SM.xg).filter(id => SM.xg[id] === g.id && !live.has(id));
+    if (gone.length){ const { error } = await sb.from('expenses').update({ deleted:true }).in('id', gone); if (error) throw error; gone.forEach(id => { delete SM.x[id]; delete SM.xg[id]; }); }
+  }
+  const localIds = new Set(S.groups.map(g => g.id));
+  for (const gid of Object.keys(SM.g)){
+    if (localIds.has(gid)) continue;
+    if (SM.own[gid]) await sb.from('groups').delete().eq('id', gid);
+    else await sb.from('group_members').delete().eq('group_id', gid).eq('user_id', me);
+    delete SM.g[gid]; delete SM.own[gid];
+    Object.keys(SM.xg).forEach(id => { if (SM.xg[id] === gid){ delete SM.xg[id]; delete SM.x[id]; } });
+  }
+  saveSM(); saveLocal(); lastSync = Date.now();
+}
+
+async function pullAll(groupsOnly){
+  if (!cloudUser) return;
+  const me = cloudUser.id;
+  if (!groupsOnly){
+    const { data, error } = await sb.from('user_state').select('data').eq('user_id', me).maybeSingle();
+    if (error) throw error;
+    const c = data && data.data;
+    if (c && hashOf(c) !== SM.p && hashOf(personal()) === SM.p){ Object.assign(S, c); SM.p = hashOf(c); applyTheme(); }
+  }
+  const mem = await sb.from('group_members').select('group_id,member_id').eq('user_id', me);
+  if (mem.error) throw mem.error;
+  const ids = mem.data.map(m => m.group_id), mine = Object.fromEntries(mem.data.map(m => [m.group_id, m.member_id]));
+  let rows = [], exps = [];
+  if (ids.length){
+    const r1 = await sb.from('groups').select('id,name,emoji,members,invite_code,created_by').in('id', ids); if (r1.error) throw r1.error; rows = r1.data;
+    const r2 = await sb.from('expenses').select('id,group_id,data,deleted').in('group_id', ids).range(0, 9999); if (r2.error) throw r2.error; exps = r2.data;
+  }
+  const photos = {}; S.groups.forEach(g => g.expenses.forEach(x => { if (x.photo) photos[x.id] = true; }));
+  const fromSrv = new Map();
+  rows.forEach(r => {
+    const myId = mine[r.id], old = S.groups.find(g => g.id === r.id) || {};
+    const mineSlot = (r.members || []).find(m => m.id === myId);
+    const members = (r.members || []).map(m => m.id === myId ? { id:'me', name:'You', uid:m.uid || null, pay:m.pay || null } : { id:m.id, name:m.name, uid:m.uid || null, pay:m.pay || null });
+    const ex = exps.filter(e => e.group_id === r.id && !e.deleted).map(e => { const x = mapIds(e.data, myId, 'me'); if (photos[x.id]) x.photo = true; return x; });
+    fromSrv.set(r.id, Object.assign({}, old, { myName:mineSlot ? mineSlot.name : old.myName, id:r.id, name:r.name, emoji:r.emoji || old.emoji, members, expenses:ex, cloud:true, myId, code:r.invite_code, owner:r.created_by }));
+    SM.g[r.id] = hashOf(gmeta(r.name, r.emoji, r.members || []));
+    if (r.created_by === me) SM.own[r.id] = true;
+  });
+  exps.forEach(e => { if (e.deleted){ delete SM.x[e.id]; delete SM.xg[e.id]; } else { SM.x[e.id] = hashOf(e.data); SM.xg[e.id] = e.group_id; } });
+  const merged = [];
+  S.groups.forEach(g => { if (fromSrv.has(g.id)){ merged.push(fromSrv.get(g.id)); fromSrv.delete(g.id); } else if (!g.cloud) merged.push(g); });
+  S.groups = [...fromSrv.values(), ...merged];
+  saveSM(); saveLocal(); lastSync = Date.now();
+  render();
+}
+
+function signInSheet(note){
+  if (!sb){ toast('Sync isn’t available right now. Check your connection.'); return; }
+  openSheet('Sign in to sync', `${note ? `<p class="hint" style="margin:0 0 10px">${note}</p>` : ''}<p class="hint" style="margin:0 0 14px">We’ll email you a 6-digit code. No password needed.</p>
+    <form id="f" novalidate><label class="field"><span>Email</span><input type="text" name="em" inputmode="email" autocapitalize="off" autocomplete="email" placeholder="you@email.com"></label>
+    <div id="codeBox" hidden><label class="field"><span>Code from the email</span><input type="text" name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="123456"></label></div>
+    <button class="btn primary block" type="submit" id="sbtn">Email me a code</button></form>`, root => {
+    const f = root.querySelector('#f'), b = root.querySelector('#sbtn'); let sent = false;
+    f.addEventListener('submit', async e => {
+      e.preventDefault();
+      const email = f.em.value.trim().toLowerCase();
+      if (!/^\S+@\S+\.\S+$/.test(email)){ toast('Enter a valid email'); return; }
+      b.disabled = true;
+      try {
+        if (!sent){
+          const { error } = await sb.auth.signInWithOtp({ email, options:{ shouldCreateUser:true, emailRedirectTo:location.origin + location.pathname } });
+          if (error) throw error;
+          sent = true; root.querySelector('#codeBox').hidden = false; b.textContent = 'Sign in'; toast('Code sent. Check your email.');
+        } else {
+          const { error } = await sb.auth.verifyOtp({ email, token:f.code.value.replace(/\s/g, ''), type:'email' });
+          if (error) throw error;
+          closeSheet(); toast('Signed in. Syncing your data…');
+        }
+      } catch(err){ toast(err && err.message ? err.message : 'Something went wrong. Try again.'); }
+      finally { b.disabled = false; }
+    });
+  });
+}
+async function cloudJoinSheet(gid, code){
+  const { data:p, error } = await sb.rpc('group_preview', { gid, code });
+  if (error || !p){ toast('That invite link didn’t work. Ask for a new one.'); return; }
+  if (S.groups.some(g => g.id === gid && g.cloud)){ location.hash = 'group-' + gid; toast('You’re already in this group'); return; }
+  const claimed = new Set(p.claimed || []), open = (p.members || []).filter(m => !claimed.has(m.id));
+  openSheet(`Join ${p.name}`, `<form id="f"><p class="hint" style="margin:0 0 14px">This is a live group: everyone sees new expenses instantly. Which one is you?</p>
+    <div class="chips" style="margin-bottom:14px">${open.map((m,i) => `<label class="chip"><input type="radio" name="who" value="${esc(m.id)}" ${i === 0 ? 'checked' : ''}><span>${av(m.name,'xs')}${esc(m.name)}</span></label>`).join('')}<label class="chip"><input type="radio" name="who" value="" ${open.length ? '' : 'checked'}><span>${av('+','xs')}Someone new</span></label></div>
+    <label class="field" id="nmBox"><span>Your name</span><input type="text" name="nm" value="${esc(S.name)}" placeholder="Your first name"></label>
+    <button class="btn primary block" type="submit">Join group</button></form>`, root => {
+    const f = root.querySelector('#f'), nb = root.querySelector('#nmBox');
+    const upd = () => { nb.hidden = !!(f.querySelector('[name=who]:checked') || {}).value; };
+    f.addEventListener('change', upd); upd();
+    f.addEventListener('submit', async e => {
+      e.preventDefault();
+      const mid = (f.querySelector('[name=who]:checked') || {}).value || null, nm = f.nm.value.trim();
+      if (!mid && !nm){ toast('Add your name'); return; }
+      const { error:je } = await sb.rpc('join_group', { gid, code, mid, mname:nm || S.name || '' });
+      if (je){ toast(/duplicate|unique/i.test(je.message) ? 'Someone already picked that name. Choose another.' : 'Couldn’t join. Try again.'); return; }
+      const picked = mid && open.find(m => m.id === mid);
+      if (!S.name) S.name = nm && !mid ? nm : picked ? picked.name : S.name;
+      S.onboarded = true; obStep = 0; saveLocal(); closeSheet();
+      queueSync(async () => { await pullAll(true); location.hash = 'group-' + gid; toast(`You joined ${p.name}`); });
+    });
+  });
+}
+function accountHTML(){
+  if (!sb) return '';
+  if (!cloudUser) return `<div class="list" style="margin-bottom:18px"><button class="row" data-act="signIn">${glyph('users')}<div class="main"><div class="t">Sign in to sync</div><div class="s">Live groups with friends, plus your data backed up</div></div>${ICON.next}</button></div>`;
+  return `<div class="list" style="margin-bottom:18px"><div class="row">${glyph('check')}<div class="main"><div class="t">${esc(cloudUser.email || 'Signed in')}</div><div class="s" id="syncStatus">${syncLabel()}</div></div><button class="btn small ghost" data-act="syncNow">Sync now</button></div><button class="row" data-act="signOut"><div class="main"><div class="t neg-t">Sign out</div><div class="s">Your data stays on this device</div></div></button></div>`;
+}
 
 /* ---------- Milestones, alerts, sharing ---------- */
 const COND = { first_sub:() => S.subs.length > 0, five_subs:() => activeSubs().length >= 5, first_cancel:() => S.subs.some(s => s.status === 'cancelled'), saved_100:() => annualSaving() >= 100, budget:() => S.budget > 0, first_group:() => S.groups.length > 0, settled:() => S.groups.some(g => g.expenses.some(x => x.type === 'payment')) };
@@ -2045,6 +2263,7 @@ function processRecurring(){
   let n = 0; const t = today();
   S.groups.forEach(g => g.expenses.slice().forEach(x => {
     if (x.type === 'payment' || !x.repeat || !x.nextDue) return;
+    if (x.by && (!cloudUser || x.by !== cloudUser.id)) return;
     const day = parse(x.date).getDate(); let guard = 0;
     while (parse(x.nextDue) <= t && guard++ < 60){
       const c = Object.assign({}, x, { id:uid(), date:x.nextDue, from:x.id }); delete c.repeat; delete c.nextDue; delete c.photo;
@@ -2103,7 +2322,7 @@ function expenseSheet(gid, xid){
       if (!(amount > 0)){ toast('Enter an amount'); return; }
       const emoji = (f.querySelector('[name=emoji]:checked') || {}).value || '🧾';
       const date = f.date.value || iso(today());
-      const x = { type:'expense', desc, emoji, amount, paidBy:f.paidBy.value, date, shares:undefined };
+      const x = { type:'expense', desc, emoji, amount, paidBy:f.paidBy.value, date, shares:undefined, by:cloudUser ? cloudUser.id : undefined };
       if (exact()){
         const shares = {}; f.querySelectorAll('[name=ex]').forEach(i => { const v = num(i.value); if (v > 0) shares[i.dataset.m] = Math.round(v * 100) / 100; });
         const sum = Object.values(shares).reduce((a,v) => a + v, 0);
@@ -2236,6 +2455,12 @@ function sampleData(){
 
 /* ---------- Actions ---------- */
 const actions = {
+  signIn: () => signInSheet(),
+  syncNow: () => queueSync(async () => { setSyncState('busy'); await pushAll(); await pullAll(); setSyncState('idle'); toast('All synced'); }),
+  signOut: (id, el) => {
+    if (!el.dataset.armed){ el.dataset.armed = '1'; const s = el.querySelector('.s'); if (s) s.textContent = 'Tap again to sign out'; return; }
+    sb.auth.signOut().finally(() => { SM = freshMeta(); saveSM(); S.groups.forEach(g => { g.cloud = false; }); saveLocal(); render(); toast('Signed out'); });
+  },
   search: () => searchSheet(),
   shareGroup: id => shareGroupSheet(id),
   lock: () => lockSheet(),
@@ -2276,6 +2501,14 @@ const actions = {
   },
   invite: async id => {
     const g = S.groups.find(x => x.id === id); if (!g) return;
+    if (cloudUser){
+      if (!g.cloud || !g.code){ scheduleSync(); toast('Still syncing this group. Try again in a moment.'); return; }
+      const link = `${location.origin}${location.pathname}?g=${encodeURIComponent(g.id)}&c=${g.code}`;
+      const text = `Join “${g.name}” on QELVO. It updates live for everyone.`;
+      if (navigator.share) navigator.share({ title:'Join my group on QELVO', text, url:link }).then(() => award('inviter')).catch(() => {});
+      else if (navigator.clipboard) navigator.clipboard.writeText(`${text} ${link}`).then(() => { toast('Invite link copied'); award('inviter'); }, () => toast('Couldn’t copy the invite link'));
+      return;
+    }
     if (!g.sid){ g.sid = uid(); save(); }
     const payload = { v:1, sid:g.sid, n:g.name, e:gEmoji(g), from:S.name || 'A friend', m:g.members.map(m => [m.id, m.id === 'me' ? (S.name || 'Friend') : m.name]), x:g.expenses };
     const link = location.origin + location.pathname + '?join=' + await encZ(payload);
@@ -2355,7 +2588,14 @@ function applyTheme(){
   render();
   checkAlerts();
   if (rec) setTimeout(() => toast(`Added ${rec} repeating bill${rec > 1 ? 's' : ''}`), show && !reduceMotion ? 1400 : 300);
-  const jq = new URLSearchParams(location.search).get('join');
+  loadCloud();
+  const qp = new URLSearchParams(location.search), cg = qp.get('g'), cc = qp.get('c');
+  if (cg && cc){
+    history.replaceState(null, '', location.pathname + location.hash);
+    sessionStorage.setItem('qelvo.join', cg + '|' + cc);
+    setTimeout(() => { if (!sb) toast('Connect to the internet to join this group'); else if (!cloudUser) signInSheet('Sign in to join the group you were invited to.'); }, show && !reduceMotion ? 2200 : 1500);
+  }
+  const jq = qp.get('join');
   if (jq){
     history.replaceState(null, '', location.pathname + location.hash);
     decZ(jq).then(p => setTimeout(() => joinSheet(p), show && !reduceMotion ? 1300 : 150)).catch(() => toast('That invite link didn’t work. Ask for a new one.'));

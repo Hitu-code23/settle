@@ -1,42 +1,9 @@
-// Settle service worker: offline support
-const CACHE = 'settle-v4';
-const EXT = 'settle-ext-v3';
-const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png', './catalog.json'];
-
-self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).catch(() => {}));
-  self.skipWaiting();
-});
-
-self.addEventListener('activate', e => {
-  e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== EXT).map(k => caches.delete(k)))).then(() => self.clients.claim()));
-});
-
-self.addEventListener('fetch', e => {
-  const req = e.request;
-  if (req.method !== 'GET') return;
-  const url = new URL(req.url);
-  // Pages: try the network first so updates show up, fall back to the saved copy offline
-  if (req.mode === 'navigate'){
-    e.respondWith(fetch(req).then(res => { const copy = res.clone(); caches.open(CACHE).then(c => c.put('./index.html', copy)); return res; })
-      .catch(() => caches.match('./index.html').then(r => r || caches.match('./'))));
-    return;
-  }
-  // Brand list: refresh in the background
-  if (url.origin === self.location.origin && url.pathname.endsWith('catalog.json')){
-    e.respondWith(caches.open(CACHE).then(c => c.match(req).then(hit => { const net = fetch(req).then(res => { c.put(req, res.clone()); return res; }).catch(() => hit); return hit || net; })));
-    return;
-  }
-  // Same-site files: saved copy first
-  if (url.origin === self.location.origin){
-    e.respondWith(caches.match(req).then(r => r || fetch(req).then(res => { const copy = res.clone(); caches.open(CACHE).then(c => c.put(req, copy)); return res; })));
-    return;
-  }
-  // Fonts and logos: show the saved copy, refresh it in the background
-  if (/fonts\.(googleapis|gstatic)\.com|google\.com\/s2\/favicons|cdn\.simpleicons\.org|cdn\.jsdelivr\.net\/npm\/@supabase/.test(req.url)){
-    e.respondWith(caches.open(EXT).then(c => c.match(req).then(hit => {
-      const net = fetch(req).then(res => { c.put(req, res.clone()); return res; }).catch(() => hit);
-      return hit || net;
-    })));
-  }
-});
+// QELVO moved into /app. This retires the old offline worker that lived at the site root.
+self.addEventListener('install', () => self.skipWaiting());
+self.addEventListener('activate', e => e.waitUntil((async () => {
+  const keys = await caches.keys();
+  await Promise.all(keys.filter(k => k.startsWith('settle-')).map(k => caches.delete(k)));
+  await self.registration.unregister();
+  const tabs = await self.clients.matchAll({ type:'window' });
+  tabs.forEach(t => t.navigate(t.url));
+})()));

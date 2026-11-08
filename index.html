@@ -604,6 +604,8 @@ main,.sheet{zoom:var(--tz,1)}
 .lhint{min-height:20px;font-size:13.5px;color:var(--muted);text-align:center;max-width:280px}
 [hidden]{display:none!important}
 .lock[hidden]{display:none!important}
+.money.wide input{padding-left:52px!important}
+.seg.full span{white-space:nowrap}
 </style>
 </head>
 <body>
@@ -723,7 +725,10 @@ const av = (n, cls='') => `<span class="av ${cls}" style="--c:${color(n)};--t:${
 const CATS = ['Streaming','Music','AI','Software','Cloud','Fitness','Shopping','News','Gaming','Other'];
 const CAT_COLOR = { AI:'#b9a8ff', Streaming:'#f3a6de', Music:'#a4d8ff', Software:'#7c5cff', Cloud:'#7fc4f0', Fitness:'#ffb26b', Shopping:'#5b3df5', News:'#c9d6df', Gaming:'#e58fc9', Other:'#8a969d' };
 const PRESETS = [['Netflix',15.49,'Streaming'],['Spotify',11.99,'Music'],['Disney+',13.99,'Streaming'],['Amazon Prime',14.99,'Shopping'],['YouTube Premium',13.99,'Streaming'],['Apple Music',10.99,'Music'],['iCloud+',2.99,'Cloud'],['Google One',2.99,'Cloud'],['ChatGPT Plus',20,'AI'],['Microsoft 365',9.99,'Software'],['Adobe Creative Cloud',59.99,'Software'],['Hulu',9.99,'Streaming'],['Max',16.99,'Streaming'],['Crave',19.99,'Streaming','CAD'],['Xbox Game Pass',16.99,'Gaming'],['PlayStation Plus',9.99,'Gaming'],['Duolingo',12.99,'Other'],['Gym',45,'Fitness']];
-const presetPrice = p => { const base = p[3] || 'USD'; if (base === S.currency) return p[1]; return Math.max(0.99, Math.ceil(p[1] * (base === 'USD' ? 1.37 : 0.73)) - 0.01); };
+const CURS = [['USD','US dollar','US$'],['CAD','Canadian dollar','CA$'],['AED','UAE dirham','AED ']];
+const DEF_RATES = { USD:1, CAD:1.37, AED:3.6725 };
+const rateOf = c => c === 'USD' ? 1 : ((S.rates && S.rates[c]) || (c === 'CAD' && S.rate) || DEF_RATES[c] || 1);
+const presetPrice = p => { const base = p[3] || 'USD'; if (base === S.currency) return p[1]; const v = p[1] / rateOf(base) * rateOf(S.currency); return Math.max(0.99, Math.ceil(v) - 0.01); };
 const PW_D = ['M0 56V0A56 56 0 0 1 56 56Z','M64 0H120A56 56 0 0 1 64 56Z','M120 64V120A56 56 0 0 1 64 64Z','M56 120H0A56 56 0 0 1 56 64Z'];
 const PW_SVG = `<svg class="mk" viewBox="0 0 120 120" aria-hidden="true"><path class="p1" d="M64 0H120A56 56 0 0 1 64 56Z" fill="currentColor"/><path class="p2" d="M56 120H0A56 56 0 0 1 56 64Z" fill="#7c5cff"/><rect class="core" x="56" y="56" width="8" height="8" fill="currentColor"/></svg>`;
 const SM_D = ['M64 0H120A56 56 0 0 1 64 56Z','M56 120H0A56 56 0 0 1 56 64Z'];
@@ -776,15 +781,18 @@ const guess = (rules, txt, fallback) => (rules.find(([re]) => re.test(txt || '')
 
 /* ---------- State ---------- */
 const KEY = 'settle.app.v1';
-const fresh = () => ({ name:'', currency:'USD', theme:'dark', subs:[], groups:[], budget:0, onboarded:false, badges:{}, notify:false, notifyDay:'', rate:1.37, trash:[], textSize:1 });
+const fresh = () => ({ name:'', currency:'USD', theme:'dark', subs:[], groups:[], budget:0, onboarded:false, badges:{}, notify:false, notifyDay:'', rate:1.37, rates:{ CAD:1.37, AED:3.6725 }, trash:[], textSize:1 });
 function load(){ try { const r = localStorage.getItem(KEY); if (r) return Object.assign(fresh(), JSON.parse(r)); } catch(e){} return fresh(); }
 var sb = null, cloudUser = null, pulling = false;
 function save(){ try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} if (cloudUser && !pulling && typeof scheduleSync === 'function') scheduleSync(); }
 let S = load();
+if (!S.rates) S.rates = { CAD:S.rate || 1.37, AED:3.6725 };
 const snapshot = () => JSON.stringify(S);
 const restore = snap => { S = JSON.parse(snap); save(); render(); };
 
-const fmt = n => new Intl.NumberFormat(S.currency === 'CAD' ? 'en-CA' : 'en-US', { style:'currency', currency:S.currency }).format(Math.abs(n) < 0.005 ? 0 : n);
+const fmt = n => new Intl.NumberFormat(S.currency === 'CAD' ? 'en-CA' : S.currency === 'AED' ? 'en-AE' : 'en-US', { style:'currency', currency:S.currency }).format(Math.abs(n) < 0.005 ? 0 : n);
+const moneySym = c => (c || S.currency) === 'AED' ? 'AED' : '$';
+const moneyCls = c => (c || S.currency) === 'AED' ? 'money wide' : 'money';
 
 function addCycle(d, cycle, day){
   const n = new Date(d);
@@ -800,8 +808,12 @@ function rollForward(s){
   s.next = iso(d);
 }
 const activeSubs = () => S.subs.filter(s => s.status !== 'cancelled');
-const conv = (a, cur) => { const c = cur || S.currency, r = S.rate || 1.37; if (c === S.currency) return a; return c === 'USD' ? a * r : a / r; };
-const curSym = c => c === 'USD' ? 'US$' : 'CA$';
+const conv = (a, cur) => { const c = cur || S.currency; if (c === S.currency) return a; return a / rateOf(c) * rateOf(S.currency); };
+const origShare = s => s.price / (s.shared || 1);
+const origMonthly = s => { const p = origShare(s); return s.cycle === 'year' ? p / 12 : s.cycle === 'week' ? p * 52 / 12 : p; };
+const fmtC = (n, c) => { c = c || S.currency; if (c === S.currency) return fmt(n); const v = Math.abs(n) < 0.005 ? 0 : n; return curSym(c) + v.toLocaleString('en-US', { minimumFractionDigits:2, maximumFractionDigits:2 }); };
+const curName = c => (CURS.find(x => x[0] === c) || [0, c])[1];
+const curSym = c => (CURS.find(x => x[0] === c) || [0,0,'$'])[2];
 const priceText = s => s.cur && s.cur !== S.currency ? `${curSym(s.cur)}${Number(s.price).toFixed(2)}` : fmt(s.price);
 const share = s => conv(s.price, s.cur) / (s.shared || 1);
 const monthly = s => { const p = share(s); return s.cycle === 'year' ? p / 12 : s.cycle === 'week' ? p * 52 / 12 : p; };
@@ -954,7 +966,7 @@ function vOnboard(){
   }
   if (obStep === 2) return `<div class="ob">${dots(2)}<div class="eyebrow">Step 2 of 3</div><h1 class="sm">Make it yours</h1><p class="lead">Used for greetings and the reminders you send friends.</p>
     <label class="field"><span>Your first name</span><input type="text" id="obName" value="${esc(S.name)}" placeholder="Optional" autocomplete="given-name"></label>
-    <div class="field"><span>Currency</span><div class="seg full">${[['USD','US dollar'],['CAD','Canadian dollar']].map(([v,l]) => `<label><input type="radio" name="obCur" value="${v}" ${S.currency===v?'checked':''}><span>${l}</span></label>`).join('')}</div></div>
+    <div class="field"><span>Currency</span><div class="seg full">${CURS.map(([v,l]) => `<label><input type="radio" name="obCur" value="${v}" ${S.currency===v?'checked':''}><span>${l}</span></label>`).join('')}</div></div>
     <button class="btn primary block" data-act="obFinish" style="margin-top:8px">Finish setup</button></div>`;
   const act = activeSubs(); obTotal = act.reduce((a,s) => a + monthly(s), 0);
   return `<div class="ob">${dots(2)}<div class="eyebrow">${obTotal > 0 ? 'Your yearly total' : 'You’re all set'}</div>
@@ -1060,19 +1072,25 @@ function subLine(s){
   const meta = (s.needsDate ? 'Tap to set the billing date' : s.trial ? `Free trial ends ${whenShort(d)}` : `Renews ${whenShort(d)}, ${dateText(s.next)}`) + (s.card ? `, ${esc(s.card)}` : '') + (s.link ? ', shared' : '');
   const warn = s.trial || (!s.needsDate && d <= 3);
   const nm = s.shared > 1 ? `${esc(s.name)} ÷ ${s.shared}` : esc(s.name);
-  const small = s.cur && s.cur !== S.currency ? `<small>${curSym(s.cur)}${Number(s.price).toFixed(2)}${CYCLE[s.cycle]}</small>` : s.cycle !== 'month' ? `<small>${fmt(share(s))}${CYCLE[s.cycle]}</small>` : '';
+  const c0 = s.cur || S.currency;
+  const small = (s.cycle !== 'month' ? `<small>${fmtC(origShare(s), c0)}${CYCLE[s.cycle]}</small>` : '') + (c0 !== S.currency ? `<small>≈ ${fmt(monthly(s))}/mo</small>` : '');
   return swipeWrap([
     `<button class="sa-cancel" data-act="swCancel" data-id="${s.id}">${ICON.pause}Tear off</button>`,
     `<button class="sa-delete" data-act="swDelete" data-id="${s.id}">${ICON.trash}Delete</button>`
-  ], `<button class="ln swipe-row" data-act="editSub" data-id="${s.id}"><span class="lnl">${subAv(s,'rc')}<span class="lnt"><span class="nm">${nm}</span><span class="mt ${warn ? 'warn' : ''}">${meta}</span></span></span><span class="am">${fmt(monthly(s))}${small}</span></button>`);
+  ], `<button class="ln swipe-row" data-act="editSub" data-id="${s.id}"><span class="lnl">${subAv(s,'rc')}<span class="lnt"><span class="nm">${nm}</span><span class="mt ${warn ? 'warn' : ''}">${meta}</span></span></span><span class="am">${fmtC(origMonthly(s), c0)}${small}</span></button>`);
 }
 function goneLine(s){
   return swipeWrap([
     `<button class="sa-restore" data-act="swRestore" data-id="${s.id}">${ICON.undo}Restore</button>`,
     `<button class="sa-delete" data-act="swDelete" data-id="${s.id}">${ICON.trash}Delete</button>`
-  ], `<button class="ln gone swipe-row" data-act="editSub" data-id="${s.id}"><span class="lnl">${subAv(s,'rc')}<span class="lnt"><span class="nm">${esc(s.name)}</span><span class="mt">Torn off ${s.cancelledAt ? dateText(s.cancelledAt) : ''}</span></span></span><span class="am">${fmt(monthly(s))}</span></button>`);
+  ], `<button class="ln gone swipe-row" data-act="editSub" data-id="${s.id}"><span class="lnl">${subAv(s,'rc')}<span class="lnt"><span class="nm">${esc(s.name)}</span><span class="mt">Torn off ${s.cancelledAt ? dateText(s.cancelledAt) : ''}</span></span></span><span class="am">${fmtC(origMonthly(s), s.cur || S.currency)}</span></button>`);
 }
 const backBtn = `<a class="iconbtn" href="#home" aria-label="Back to wallet">${ICON.back}</a>`;
+function byCurHTML(act){
+  const by = {}; act.forEach(s => { const c = s.cur || S.currency; by[c] = (by[c] || 0) + origMonthly(s); });
+  const cs = Object.keys(by); if (cs.length < 2) return '';
+  return cs.sort((a,b) => (a === S.currency ? -1 : b === S.currency ? 1 : 0)).map(c => `<div class="sub-ln"><span>Billed in ${curName(c)}s</span><span>${fmtC(by[c], c)}</span></div>`).join('') + `<div class="sub-ln" style="font-size:12px"><span>Total converted to ${curName(S.currency)}s at your rates</span><span></span></div>`;
+}
 function vSubs(){
   const act = [...activeSubs()].sort((a,b) => parse(a.next) - parse(b.next)), gone = S.subs.filter(s => s.status === 'cancelled');
   const total = act.reduce((a,s) => a + monthly(s), 0), saved = annualSaving();
@@ -1090,6 +1108,7 @@ function vSubs(){
       ${body}
       <div class="dash"></div>
       <div class="tot"><span>Total a month</span><span>${fmt(total)}</span></div>
+      ${byCurHTML(act)}
       <div class="sub-ln"><span>Over a year</span><span>${fmt(total * 12)}</span></div>
       ${budget}
       ${gone.length ? `<div class="dash"></div><div class="shd">Torn off</div>${gone.map(goneLine).join('')}<div class="sub-ln v"><span>Saved a year</span><span>${fmt(saved)}</span></div>` : ''}
@@ -1170,7 +1189,7 @@ function vCalendar(act){
   }
   const wd = ['S','M','T','W','T','F','S'];
   const title = m0.toLocaleDateString(undefined, { month:'long', year:'numeric' });
-  const sel = calSel ? `<div class="sec"><h2>${longDate(calSel)}</h2></div><div class="list">${occ[calSel].map(s => `<button class="row" data-act="editSub" data-id="${s.id}">${subAv(s)}<div class="main"><div class="t">${esc(s.name)}</div><div class="s">${esc(s.cat)}${s.shared > 1 ? `, your share of ${priceText(s)}` : ''}</div></div><div class="r"><div class="p">${fmt(share(s))}</div><div class="u">${CYCLE[s.cycle]}</div></div></button>`).join('')}</div>` : '';
+  const sel = calSel ? `<div class="sec"><h2>${longDate(calSel)}</h2></div><div class="list">${occ[calSel].map(s => `<button class="row" data-act="editSub" data-id="${s.id}">${subAv(s)}<div class="main"><div class="t">${esc(s.name)}</div><div class="s">${esc(s.cat)}${s.shared > 1 ? `, your share of ${priceText(s)}` : ''}</div></div><div class="r"><div class="p">${fmtC(origShare(s), s.cur || S.currency)}</div><div class="u">${CYCLE[s.cycle]}</div></div></button>`).join('')}</div>` : '';
   return `<div class="ins-grid"><div class="panel">
     <div class="cal-head"><div><h3>${title}</h3><div class="s">${count ? `${count} payment${count>1?'s':''}, ${fmt(mTotal)} due` : 'Nothing due'}</div></div>
       <div class="navs"><button class="iconbtn" data-act="calNav" data-id="-1" aria-label="Previous month" ${calOffset <= 0 ? 'disabled' : ''}>${ICON.back}</button><button class="iconbtn" data-act="calNav" data-id="1" aria-label="Next month" ${calOffset >= 11 ? 'disabled' : ''}>${ICON.next}</button></div></div>
@@ -1319,7 +1338,7 @@ function vYou(){
   ${accountHTML()}
   ${installCard()}
   <label class="field"><span>Your first name</span><input type="text" id="nameInput" value="${esc(S.name)}" placeholder="Used in greetings and reminders" autocomplete="given-name"></label>
-  <div class="field"><span>Currency</span>${radios('cur', [['USD','US dollar'],['CAD','Canadian dollar']], S.currency)}</div>
+  <div class="field"><span>Main currency, for totals</span>${radios('cur', CURS.map(c => [c[0], c[1]]), S.currency)}</div>
   <div class="field"><span>Appearance</span>${radios('theme', [['system','Auto'],['light','Light'],['dark','Dark']], S.theme)}</div>
   <div class="sec"><h2>Smart tools</h2></div>
   <div class="list">
@@ -1329,7 +1348,7 @@ function vYou(){
     <button class="row" data-act="shareCard">${glyph('megaphone')}<div class="main"><div class="t">Share your year card</div><div class="s">Made for Instagram stories and WhatsApp</div></div></button>
     <button class="row" data-act="lock">${glyph('check')}<div class="main"><div class="t">App lock</div><div class="s">PIN plus Face ID or fingerprint</div></div><span class="st">${S.lock && S.lock.pin ? 'On' : 'Off'}</span></button>
   </div>
-  <label class="field" style="margin-top:18px"><span>Exchange rate, for subscriptions billed in the other currency</span><div class="ratebox"><b>1 US$ =</b><input type="text" inputmode="decimal" id="rateInput" value="${(S.rate || 1.37).toFixed(4)}"><b>CA$</b></div></label>
+  <div class="field" style="margin-top:18px"><span>Exchange rates, for subscriptions billed in another currency</span><div class="ratebox"><b>1 US$ =</b><input type="text" inputmode="decimal" data-rate="CAD" value="${rateOf('CAD').toFixed(4)}"><b>CA$</b></div><div class="ratebox" style="margin-top:8px"><b>1 US$ =</b><input type="text" inputmode="decimal" data-rate="AED" value="${rateOf('AED').toFixed(4)}"><b>AED</b></div></div>
   <div class="field"><span>Text size</span>${radios('tsz', [['1','Default'],['1.12','Large'],['1.25','Larger']], String(S.textSize || 1))}</div>
   <div class="sec"><h2>Milestones</h2><span class="st" style="color:var(--muted);font-size:13.5px">${earned} of ${BADGES.length}</span></div>
   <div class="badges">${BADGES.map(b => `<div class="bdg ${S.badges && S.badges[b[0]] ? 'on' : ''}">${glyph(b[1])}<div class="t">${b[2]}</div><div class="s">${b[3]}</div></div>`).join('')}</div>
@@ -1414,7 +1433,7 @@ function searchSheet(){
     const run = () => {
       const k = q.value.trim().toLowerCase(); if (!k){ out.innerHTML = ''; return; }
       const r = [];
-      S.subs.forEach(s => { if (s.name.toLowerCase().includes(k)) r.push(`<button class="row" data-act="editSub" data-id="${s.id}">${subAv(s)}<div class="main"><div class="t">${esc(s.name)}</div><div class="s">Subscription${s.status === 'cancelled' ? ', cancelled' : ''}</div></div><div class="r"><div class="p">${fmt(monthly(s))}</div><div class="u">/mo</div></div></button>`); });
+      S.subs.forEach(s => { if (s.name.toLowerCase().includes(k)) r.push(`<button class="row" data-act="editSub" data-id="${s.id}">${subAv(s)}<div class="main"><div class="t">${esc(s.name)}</div><div class="s">Subscription${s.status === 'cancelled' ? ', cancelled' : ''}</div></div><div class="r"><div class="p">${fmtC(origMonthly(s), s.cur || S.currency)}</div><div class="u">/mo</div></div></button>`); });
       S.groups.forEach(g => {
         if (g.name.toLowerCase().includes(k)) r.push(`<a class="row" href="#group-${g.id}">${glyph(gEmoji(g))}<div class="main"><div class="t">${esc(g.name)}</div><div class="s">Group, ${g.members.length} people</div></div></a>`);
         g.expenses.forEach(x => { if ((x.desc || '').toLowerCase().includes(k)) r.push(`<button class="row" data-act="expDetail" data-id="${g.id}" data-x="${x.id}">${glyph(xEmoji(x))}<div class="main"><div class="t">${esc(x.desc)}</div><div class="s">${esc(g.name)}, ${dateText(x.date)}</div></div><div class="r"><div class="p">${fmt(x.amount)}</div></div></button>`); });
@@ -1535,7 +1554,7 @@ const hashOf = o => { const s = stable(o); let h = 0; for (let i = 0; i < s.leng
 const queueSync = fn => (syncChain = syncChain.then(fn).catch(err => { console.warn('sync', err); setSyncState('error'); }));
 const syncLabel = () => syncState === 'error' ? 'Couldn’t sync, will retry' : syncState === 'busy' ? 'Syncing…' : lastSync ? `Synced at ${new Date(lastSync).toLocaleTimeString([], { hour:'numeric', minute:'2-digit' })}` : 'Signed in';
 function setSyncState(s){ syncState = s; const el = document.getElementById('syncStatus'); if (el) el.textContent = syncLabel(); }
-const personal = () => ({ subs:S.subs, name:S.name, currency:S.currency, rate:S.rate, budget:S.budget, badges:S.badges, onboarded:S.onboarded, theme:S.theme, textSize:S.textSize });
+const personal = () => ({ subs:S.subs, name:S.name, currency:S.currency, rate:S.rate, rates:S.rates, budget:S.budget, badges:S.badges, onboarded:S.onboarded, theme:S.theme, textSize:S.textSize });
 const cm = m => ({ id:m.id, name:m.name, uid:m.uid || null, pay:m.pay || null });
 const myName = () => S.name || (cloudUser && cloudUser.email ? cloudUser.email.split('@')[0] : 'Friend');
 const srvMembers = g => g.members.map(m => m.id === 'me' ? cm({ id:g.myId, name:S.name || g.myName || myName(), uid:cloudUser.id, pay:m.pay }) : cm(m));
@@ -1882,7 +1901,7 @@ function shareCardSheet(){
 }
 function budgetSheet(){
   openSheet('Monthly budget', `<form id="f" novalidate><p class="hint" style="margin:0 0 14px">Set a limit for subscriptions. The bar on your home screen turns pink if you go over.</p>
-    <label class="field"><span>Budget per month</span><div class="money"><b>$</b><input type="text" inputmode="decimal" name="b" value="${S.budget > 0 ? S.budget.toFixed(2) : ''}" placeholder="150.00"></div></label>
+    <label class="field"><span>Budget per month</span><div class="${moneyCls()}"><b>${moneySym()}</b><input type="text" inputmode="decimal" name="b" value="${S.budget > 0 ? S.budget.toFixed(2) : ''}" placeholder="150.00"></div></label>
     <button class="btn primary block" type="submit">Save budget</button>${S.budget > 0 ? `<div class="btnrow"><button type="button" class="btn danger" data-rm>Remove budget</button></div>` : ''}</form>`, root => {
     const f = root.querySelector('#f');
     f.addEventListener('submit', e => { e.preventDefault(); const v = num(f.b.value); if (!(v > 0)){ toast('Enter a monthly amount'); return; } S.budget = Math.round(v * 100) / 100; done('Budget saved'); });
@@ -1893,7 +1912,7 @@ function rateSheet(){
   const act = activeSubs();
   if (!act.length){ toast('Add a subscription first'); return; }
   const opts = [['love','Love it'],['meh','It’s okay'],['rarely','Rarely use']];
-  openSheet('Worth it?', `<form id="f"><p class="hint" style="margin:0 0 6px">Be honest. QELVO uses this to point out easy savings.</p>${act.map(s => `<div class="rate"><div class="rh">${subAv(s,'xs')}${esc(s.name)}<span style="margin-left:auto;color:var(--muted);font-size:13px">${fmt(monthly(s))}/mo</span></div><div class="seg full">${opts.map(([k,l]) => `<label><input type="radio" name="w_${s.id}" value="${k}" ${s.worth===k?'checked':''}><span>${l}</span></label>`).join('')}</div></div>`).join('')}<button class="btn primary block" type="submit" style="margin-top:14px">Save ratings</button></form>`, root => {
+  openSheet('Worth it?', `<form id="f"><p class="hint" style="margin:0 0 6px">Be honest. QELVO uses this to point out easy savings.</p>${act.map(s => `<div class="rate"><div class="rh">${subAv(s,'xs')}${esc(s.name)}<span style="margin-left:auto;color:var(--muted);font-size:13px">${fmtC(origMonthly(s), s.cur || S.currency)}/mo</span></div><div class="seg full">${opts.map(([k,l]) => `<label><input type="radio" name="w_${s.id}" value="${k}" ${s.worth===k?'checked':''}><span>${l}</span></label>`).join('')}</div></div>`).join('')}<button class="btn primary block" type="submit" style="margin-top:14px">Save ratings</button></form>`, root => {
     const f = root.querySelector('#f');
     f.addEventListener('submit', e => { e.preventDefault(); act.forEach(s => { const r = f.querySelector(`[name="w_${s.id}"]:checked`); if (r) s.worth = r.value; }); done('Ratings saved'); });
   });
@@ -2096,8 +2115,8 @@ function subSheet(id){
     <form id="f" novalidate>
       <div class="field"><span>Name</span><div class="namebox"><span class="nlogo" id="nlogo">${subAv(v.name ? v : { name:'?' },'xs')}</span><input type="text" name="name" value="${esc(v.name)}" placeholder="Search any app: Netflix, Notion, Peloton…" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Name"></div><div class="sugg" id="sugg" hidden></div></div>
       <div class="grid2">
-        <label class="field"><span>Price</span><div class="money"><b>$</b><input type="text" inputmode="decimal" name="price" value="${v.price === '' ? '' : Number(v.price).toFixed(2)}" placeholder="0.00"></div></label>
-        <label class="field"><span>Currency</span><select name="cur">${['USD','CAD'].map(c => `<option value="${c}" ${(v.cur || S.currency) === c ? 'selected' : ''}>${c === 'USD' ? 'US dollar' : 'Canadian dollar'}</option>`).join('')}</select></label>
+        <label class="field"><span>Price</span><div class="${moneyCls(v.cur)}" id="pmoney"><b>${moneySym(v.cur)}</b><input type="text" inputmode="decimal" name="price" value="${v.price === '' ? '' : Number(v.price).toFixed(2)}" placeholder="0.00"></div></label>
+        <label class="field"><span>Currency</span><select name="cur">${CURS.map(([c,l]) => `<option value="${c}" ${(v.cur || S.currency) === c ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
       </div>
       <div class="grid2">
         <label class="field"><span>Shared by</span><select name="shared">${[1,2,3,4,5,6].map(n => `<option value="${n}" ${+v.shared===n?'selected':''}>${n === 1 ? 'Just me' : n + ' people'}</option>`).join('')}</select></label>
@@ -2151,6 +2170,7 @@ function subSheet(id){
     sugg.addEventListener('pointerdown', e => e.preventDefault());
     sugg.addEventListener('click', e => { const b = e.target.closest('.sg'); if (b) pick(results[+b.dataset.i]); });
     f.site.addEventListener('change', showLogo);
+    f.cur.addEventListener('change', () => { const pm = root.querySelector('#pmoney'); pm.className = moneyCls(f.cur.value); pm.querySelector('b').textContent = moneySym(f.cur.value); });
     const lgBox = root.querySelector('#lgBox');
     const drawLink = () => {
       if (!lgBox) return; const g = S.groups.find(x => x.id === f.lg.value);
@@ -2283,13 +2303,13 @@ function expenseSheet(gid, xid){
     ${emoPicker('emoji', EXP_EMO, x0 ? (x0.emoji || '🧾') : '🧾')}
     <label class="field"><span>What was it for?</span><input type="text" name="desc" value="${x0 ? esc(x0.desc) : ''}" placeholder="Groceries, hydro bill, dinner…"></label>
     <div class="grid2">
-      <label class="field"><span>Amount</span><div class="money"><b>$</b><input type="text" inputmode="decimal" name="amount" value="${x0 ? x0.amount.toFixed(2) : ''}" placeholder="0.00"></div></label>
+      <label class="field"><span>Amount</span><div class="${moneyCls()}"><b>${moneySym()}</b><input type="text" inputmode="decimal" name="amount" value="${x0 ? x0.amount.toFixed(2) : ''}" placeholder="0.00"></div></label>
       <label class="field"><span>Date</span><input type="date" name="date" value="${x0 ? x0.date : iso(today())}"></label>
     </div>
     <div class="field"><span>Paid by</span><div class="chips">${g.members.map((m,i) => chip('radio','paidBy',m, x0 ? m.id === x0.paidBy : i === 0)).join('')}</div></div>
     <div class="field"><span>Split</span><div class="seg full" style="margin-bottom:12px"><label><input type="radio" name="mode" value="equal" ${isEx ? '' : 'checked'}><span>Equally</span></label><label><input type="radio" name="mode" value="exact" ${isEx ? 'checked' : ''}><span>Exact amounts</span></label></div>
       <div id="eqBox"><div class="chips">${g.members.map(m => chip('checkbox','split',m, x0 && !isEx ? x0.split.includes(m.id) : true)).join('')}</div></div>
-      <div id="exBox" hidden>${g.members.map(m => `<div class="exrow">${av(mName(g,m.id),'xs')}<span class="nm">${esc(mName(g,m.id))}</span><div class="money"><b>$</b><input type="text" inputmode="decimal" name="ex" data-m="${m.id}" value="${isEx && x0.shares[m.id] ? x0.shares[m.id].toFixed(2) : ''}" placeholder="0.00" aria-label="${esc(mName(g,m.id))}’s share"></div></div>`).join('')}</div>
+      <div id="exBox" hidden>${g.members.map(m => `<div class="exrow">${av(mName(g,m.id),'xs')}<span class="nm">${esc(mName(g,m.id))}</span><div class="${moneyCls()}"><b>${moneySym()}</b><input type="text" inputmode="decimal" name="ex" data-m="${m.id}" value="${isEx && x0.shares[m.id] ? x0.shares[m.id].toFixed(2) : ''}" placeholder="0.00" aria-label="${esc(mName(g,m.id))}’s share"></div></div>`).join('')}</div>
     </div>
     <div class="each" id="each"></div>
     <label class="field"><span>Receipt photo</span><input type="file" name="photo" accept="image/*">${x0 && x0.photo ? '<small class="hint" style="display:block;margin:6px 0 0">A photo is attached. Choose a new one to replace it.</small>' : ''}</label>
@@ -2358,7 +2378,7 @@ function settleSheet(gid, from, to, amt){
       <label class="field"><span>Who paid</span><select name="from">${opts(from)}</select></label>
       <label class="field"><span>Paid to</span><select name="to">${opts(to)}</select></label>
     </div>
-    <label class="field"><span>Amount</span><div class="money"><b>$</b><input type="text" inputmode="decimal" name="amount" value="${amt ? Number(amt).toFixed(2) : ''}" placeholder="0.00"></div></label>
+    <label class="field"><span>Amount</span><div class="${moneyCls()}"><b>${moneySym()}</b><input type="text" inputmode="decimal" name="amount" value="${amt ? Number(amt).toFixed(2) : ''}" placeholder="0.00"></div></label>
     <div id="payBox"></div>
     <button class="btn primary block" type="submit">Record payment</button>
     <div class="btnrow"><button type="button" class="btn soft" data-remind>Send a reminder</button></div>
@@ -2482,7 +2502,7 @@ const actions = {
     const n = $('#obName'), c = document.querySelector('[name=obCur]:checked');
     if (n) S.name = n.value.trim(); if (c) S.currency = c.value;
     const nx = today(); nx.setDate(nx.getDate() + 30);
-    [...obPicked].forEach(i => { const [nm,,cat] = PRESETS[i], pr = presetPrice(PRESETS[i]); S.subs.push({ id:uid(), name:nm, price:pr, cycle:'month', next:iso(nx), day:nx.getDate(), cat, shared:1, status:'active', needsDate:true }); });
+    [...obPicked].forEach(i => { const [nm,,cat] = PRESETS[i], pr = presetPrice(PRESETS[i]); S.subs.push({ id:uid(), cur:S.currency, name:nm, price:pr, cycle:'month', next:iso(nx), day:nx.getDate(), cat, shared:1, status:'active', needsDate:true }); });
     obPicked = new Set(); obStep = 3; save(); render(true); window.scrollTo(0,0);
   },
   obDone: () => { S.onboarded = true; obStep = 0; tapePlayed = false; shownTotal = 0; save(); location.hash = 'home'; render(true); },
@@ -2556,11 +2576,11 @@ document.addEventListener('input', e => {
   subQuery = e.target.value; const box = $('#subList'); if (box) box.innerHTML = subListHTML(activeSubs());
 });
 function bindYou(){
-  const ri = $('#rateInput'); ri && ri.addEventListener('change', () => { const v = num(ri.value); if (v > 0.2 && v < 5){ S.rate = v; save(); toast('Exchange rate saved'); } else { ri.value = (S.rate || 1.37).toFixed(4); toast('Enter a rate like 1.37'); } });
+  document.querySelectorAll('[data-rate]').forEach(ri => ri.addEventListener('change', () => { const c = ri.dataset.rate, v = num(ri.value); if (v > 0.05 && v < 1000){ S.rates = Object.assign({}, S.rates, { [c]:v }); if (c === 'CAD') S.rate = v; save(); toast('Exchange rate saved'); } else { ri.value = rateOf(c).toFixed(4); toast('Enter a number like ' + DEF_RATES[c]); } }));
   document.querySelectorAll('input[name=tsz]').forEach(r => r.addEventListener('change', () => { S.textSize = +r.value; save(); applyTheme(); }));
   const n = $('#nameInput');
   n.addEventListener('change', () => { S.name = n.value.trim(); save(); toast('Name saved'); });
-  document.querySelectorAll('input[name=cur]').forEach(r => r.addEventListener('change', () => { S.currency = r.value; save(); toast(`Showing ${r.value === 'CAD' ? 'Canadian' : 'US'} dollars`); }));
+  document.querySelectorAll('input[name=cur]').forEach(r => r.addEventListener('change', () => { S.subs.forEach(s => { if (!s.cur) s.cur = S.currency; }); S.currency = r.value; save(); toast(`Showing amounts in ${(CURS.find(c => c[0] === r.value) || [0,'dollars'])[1]}s`); }));
   document.querySelectorAll('input[name=theme]').forEach(r => r.addEventListener('change', () => { S.theme = r.value; save(); applyTheme(); }));
 }
 function applyTheme(){

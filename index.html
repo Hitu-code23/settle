@@ -124,7 +124,7 @@ main.enter>*:nth-child(n+4){animation-delay:90ms}
 .btn:active{transform:scale(.97);filter:brightness(.95)}
 .btn.primary,.iconbtn.primary{background:#7c5cff;color:#fff;border:0;box-shadow:0 6px 18px rgba(124,92,255,.32)}
 .btn.primary.block,.ob .btn.primary{background:var(--grad);border:2px solid #fff;outline:2px solid #fff;outline-offset:-4px;box-shadow:0 4px 4px rgba(91,61,245,.3),4px 4px 12px #6a4cff inset}
-.btn.primary.block::after,.ob .btn.primary::after{content:"↗";font-size:17px;line-height:0;transition:transform .25s var(--ease)}
+.btn.primary.block::after,.ob .btn.primary::after{content:"\2197\FE0E";font-family:Kanit,system-ui,sans-serif;font-size:17px;line-height:0;transition:transform .25s var(--ease)}
 .btn.primary.block:hover::after,.ob .btn.primary:hover::after{transform:translate(3px,-3px)}
 .btn.ghost{background:var(--surface);border:1px solid var(--line)}
 .btn.soft{background:var(--surface-2);border:1px solid var(--line)}
@@ -183,7 +183,7 @@ button.row:active,a.row:active{background:var(--surface-2)}
 .av.sm{width:28px;height:28px;border-radius:9px;font-size:12.5px}
 .av.xs{width:22px;height:22px;border-radius:7px;font-size:11px}
 .etile{width:42px;height:42px;border-radius:13px;background:color-mix(in srgb,var(--c,#c9d6df) 16%,var(--surface));border:1px solid color-mix(in srgb,var(--c,#c9d6df) 30%,transparent);color:color-mix(in srgb,var(--c,#c9d6df) 70%,var(--ink));display:grid;place-items:center;flex:none}
-.etile svg,.emo svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.etile svg,.emo svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round}
 .etile.xl{width:56px;height:56px;border-radius:17px}
 .etile.xl svg{width:27px;height:27px}
 .bdg .etile{margin:0 auto 4px;width:44px;height:44px}
@@ -530,6 +530,14 @@ body::after{display:none}
 @media (min-width:900px){.nav{width:240px}.wrapc{margin:0}body[data-r="home"] main{max-width:556px}}
 .toast{width:max-content}
 .toast span{flex:1;min-width:0}
+
+.av{position:relative;overflow:hidden}
+.av img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;padding:16%;border-radius:inherit}
+.av.xs img,.av.rc img{padding:12%}
+.av.rc{width:32px;height:32px;border-radius:10px;font-size:13px}
+.ln>span.lnl{display:flex;flex-direction:row;align-items:center;gap:11px;min-width:0}
+.lnt{display:flex;flex-direction:column;min-width:0}
+.slip .av.rc{box-shadow:0 0 0 1px rgba(0,0,0,.06)}
 </style>
 </head>
 <body>
@@ -542,9 +550,9 @@ body::after{display:none}
 
 <nav class="nav" aria-label="Main">
   <div class="brand"><svg class="mark" viewBox="0 0 120 120" aria-hidden="true"><path class="p1" d="M64 0H120A56 56 0 0 1 64 56Z" fill="currentColor"/><path class="p2" d="M56 120H0A56 56 0 0 1 56 64Z" fill="#7c5cff"/><rect class="core" x="56" y="56" width="8" height="8" fill="currentColor"/></svg>Settle</div>
-  <a href="#home" data-nav="home"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M4 7a2 2 0 0 1 2-2h11v4"/><path d="M4 7v11a2 2 0 0 0 2 2h14V9H6a2 2 0 0 1-2-2z"/><path d="M16.5 14.5h.01"/></svg></span>Wallet</a>
-  <a href="#insights" data-nav="insights"><span class="ic"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><path d="M12 3v5M21 12h-5"/></svg></span>Insights</a>
-  <a href="#you" data-nav="you"><span class="ic"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg></span>You</a>
+  <a href="#home" data-nav="home"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M17 8v-3a1 1 0 0 0 -1 -1h-10a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1 -1 1h-12a2 2 0 0 1 -2 -2v-12"/><path d="M20 12v4h-4a2 2 0 0 1 0 -4h4"/></svg></span>Wallet</a>
+  <a href="#insights" data-nav="insights"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M10 3.2a9 9 0 1 0 10.8 10.8a1 1 0 0 0 -1 -1h-3.8a4.1 4.1 0 1 1 -5 -5v-4a.9 .9 0 0 0 -1 -.8"/><path d="M15 3.5a9 9 0 0 1 5.5 5.5h-4.5a9 9 0 0 0 -1 -1v-4.5"/></svg></span>Insights</a>
+  <a href="#you" data-nav="you"><span class="ic"><svg class="i" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/></svg></span>You</a>
 </nav>
 
 <main id="view"></main>
@@ -553,7 +561,7 @@ body::after{display:none}
   <div class="scrim" data-close></div>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
     <div class="grab" aria-hidden="true"></div>
-    <div class="sheet-head"><h3 id="sheetTitle"></h3><button class="iconbtn" data-close aria-label="Close"><svg class="i" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div class="sheet-head"><h3 id="sheetTitle"></h3><button class="iconbtn" data-close aria-label="Close"><svg class="i" viewBox="0 0 24 24"><path d="M18 6l-12 12"/><path d="M6 6l12 12"/></svg></button></div>
     <div id="sheetBody"></div>
   </div>
 </div>
@@ -575,18 +583,23 @@ const dateText = s => parse(s).toLocaleDateString(undefined, { month:'short', da
 const longDate = s => parse(s).toLocaleDateString(undefined, { weekday:'short', month:'short', day:'numeric', year:'numeric' });
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const ICON = {
-  share:'<svg class="i" viewBox="0 0 24 24"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>',
-  invite:'<svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M19 8v6M16 11h6"/></svg>',
-  search:'<svg class="i" viewBox="0 0 24 24" style="width:18px;height:18px"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>',
-  plus:'<svg class="i" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>',
-  back:'<svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>',
-  next:'<svg class="i" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>',
-  dots:'<svg class="i" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg>',
-  arrow:'<svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
-  trash:'<svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg>',
-  pause:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>',
-  undo:'<svg class="i" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/></svg>'
+  share:'<svg class="i" viewBox="0 0 24 24"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2"/><path d="M7 9l5 -5l5 5"/><path d="M12 4l0 12"/></svg>',
+  invite:'<svg class="i" viewBox="0 0 24 24"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"/><path d="M16 19h6"/><path d="M19 16v6"/><path d="M6 21v-2a4 4 0 0 1 4 -4h4"/></svg>',
+  search:'<svg class="i" viewBox="0 0 24 24" style="width:18px;height:18px"><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/><path d="M21 21l-6 -6"/></svg>',
+  plus:'<svg class="i" viewBox="0 0 24 24"><path d="M12 5l0 14"/><path d="M5 12l14 0"/></svg>',
+  back:'<svg class="i" viewBox="0 0 24 24"><path d="M15 6l-6 6l6 6"/></svg>',
+  next:'<svg class="i" viewBox="0 0 24 24"><path d="M9 6l6 6l-6 6"/></svg>',
+  dots:'<svg class="i" viewBox="0 0 24 24"><path d="M5 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M19 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/></svg>',
+  arrow:'<svg class="i" viewBox="0 0 24 24" style="width:16px;height:16px"><path d="M5 12l14 0"/><path d="M13 18l6 -6"/><path d="M13 6l6 6"/></svg>',
+  trash:'<svg class="i" viewBox="0 0 24 24"><path d="M4 7l16 0"/><path d="M10 11l0 6"/><path d="M14 11l0 6"/><path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"/><path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/></svg>',
+  pause:'<svg class="i" viewBox="0 0 24 24"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M9 12l6 0"/></svg>',
+  undo:'<svg class="i" viewBox="0 0 24 24"><path d="M9 14l-4 -4l4 -4"/><path d="M5 10h11a4 4 0 1 1 0 8h-1"/></svg>'
 };
+const SITES = {'netflix':'netflix.com','spotify':'spotify.com','disney+':'disneyplus.com','disney plus':'disneyplus.com','amazon prime':'amazon.com','prime video':'primevideo.com','youtube premium':'youtube.com','youtube tv':'tv.youtube.com','youtube music':'music.youtube.com','apple music':'apple.com','apple tv+':'apple.com','apple one':'apple.com','apple arcade':'apple.com','icloud+':'icloud.com','icloud':'icloud.com','google one':'one.google.com','chatgpt plus':'chatgpt.com','chatgpt':'chatgpt.com','claude':'claude.ai','claude pro':'claude.ai','perplexity':'perplexity.ai','midjourney':'midjourney.com','github copilot':'github.com','microsoft 365':'microsoft.com','office 365':'microsoft.com','adobe creative cloud':'adobe.com','adobe':'adobe.com','hulu':'hulu.com','max':'max.com','hbo max':'max.com','crave':'crave.ca','paramount+':'paramountplus.com','peacock':'peacocktv.com','espn+':'espn.com','dazn':'dazn.com','fubo':'fubo.tv','sling tv':'sling.com','crunchyroll':'crunchyroll.com','twitch':'twitch.tv','xbox game pass':'xbox.com','playstation plus':'playstation.com','nintendo switch online':'nintendo.com','audible':'audible.com','kindle unlimited':'amazon.com','dropbox':'dropbox.com','notion':'notion.so','canva':'canva.com','figma':'figma.com','grammarly':'grammarly.com','1password':'1password.com','nordvpn':'nordvpn.com','expressvpn':'expressvpn.com','linkedin premium':'linkedin.com','duolingo':'duolingo.com','headspace':'headspace.com','calm':'calm.com','strava':'strava.com','peloton':'onepeloton.com','planet fitness':'planetfitness.com','goodlife gym':'goodlifefitness.com','goodlife fitness':'goodlifefitness.com','new york times':'nytimes.com','nytimes':'nytimes.com','the athletic':'theathletic.com','siriusxm':'siriusxm.com','tidal':'tidal.com','patreon':'patreon.com','discord nitro':'discord.com','snapchat+':'snapchat.com','x premium':'x.com','tinder':'tinder.com','bumble':'bumble.com','hinge':'hinge.co','uber one':'uber.com','doordash':'doordash.com','dashpass':'doordash.com','instacart+':'instacart.com','walmart+':'walmart.com','costco':'costco.com','rogers':'rogers.com','bell':'bell.ca','telus':'telus.com','fido':'fido.ca','verizon':'verizon.com','t-mobile':'t-mobile.com','at&t':'att.com'};
+const cleanSite = v => String(v || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').split(/[/?#\s]/)[0];
+const siteFor = s => cleanSite(s.site) || SITES[String(s.name || '').trim().toLowerCase()] || '';
+const subAv = (s, cls='') => { const d = siteFor(s); const base = av(s.name, cls); return d ? base.replace('</span>', `<img src="https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=128" alt="" loading="lazy" referrerpolicy="no-referrer"></span>`) : base; };
+document.addEventListener('error', e => { const t = e.target; if (t && t.tagName === 'IMG' && t.closest('.av')) t.remove(); }, true);
 const COLORS = ['#7c5cff','#a4d8ff','#f3a6de','#ffb26b','#5b3df5','#7fc4f0','#e58fc9','#c9d6df'];
 const DARK_TXT = new Set(['#a4d8ff','#f3a6de','#ffb26b','#7fc4f0','#e58fc9','#c9d6df']);
 const txt = c => DARK_TXT.has(c) ? '#0c0c0c' : '#fff';
@@ -606,37 +619,37 @@ const GROUP_EMO = ['🏠','✈️','🏔️','🍽️','💼','🎉','🚗','�
 const EXP_RULES = [[/grocer|costco|walmart|loblaws|no frills|market|supermarket/i,'🛒'],[/rent|cabin|hotel|airbnb|stay|motel/i,'🏠'],[/pizza|dinner|lunch|breakfast|brunch|restaurant|takeout|meal|sushi|burger|food/i,'🍕'],[/coffee|tim hortons|starbucks|cafe/i,'☕'],[/beer|drinks|bar|wine|pub/i,'🍻'],[/gas|fuel|petro|esso|shell/i,'⛽'],[/uber|lyft|taxi|cab|ride/i,'🚕'],[/hydro|electric|power|utilit|heating/i,'⚡'],[/internet|wifi|wi-fi|phone|rogers|bell|telus/i,'📶'],[/movie|cinema|tickets|concert|show/i,'🎬'],[/flight|plane|airline/i,'✈️'],[/party|birthday|gift/i,'🎉'],[/pharmacy|medicine|shoppers/i,'💊']];
 const GROUP_RULES = [[/apart|house|home|room|flat|condo/i,'🏠'],[/banff|ski|mountain|hike|camp/i,'🏔️'],[/trip|weekend|vacation|travel|holiday/i,'✈️'],[/dinner|lunch|food|brunch/i,'🍽️'],[/office|work|team/i,'💼'],[/party|birthday|wedding/i,'🎉'],[/car|road/i,'🚗']];
 const GLYPH = {
-  receipt:'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/>',
-  cart:'<circle cx="9" cy="20" r="1.3"/><circle cx="17" cy="20" r="1.3"/><path d="M3 4h2l2.4 11h10.2L20 8H6"/>',
-  pizza:'<path d="M12 3 3.5 18.5c5.5 2.7 11.5 2.7 17 0z"/><path d="M6 14.5c3.8 1.4 8.2 1.4 12 0"/><circle cx="11" cy="10.5" r=".9"/><circle cx="14" cy="15.5" r=".9"/>',
-  coffee:'<path d="M4 9h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h1.5a2.5 2.5 0 0 1 0 5H17"/><path d="M8 3v3M12 3v3"/>',
-  drink:'<path d="M6 6h10v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M16 9h2a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2"/><path d="M6 10h10"/>',
-  fuel:'<path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16M3 21h12M4 10h10"/><path d="M14 8h2a2 2 0 0 1 2 2v6a1.5 1.5 0 0 0 3 0V8l-3-3"/>',
-  car:'<path d="M5 16h14v-4l-2-5H7l-2 5z"/><path d="M5 12h14"/><circle cx="8" cy="17.5" r="1.5"/><circle cx="16" cy="17.5" r="1.5"/>',
-  home:'<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
-  bolt:'<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>',
-  wifi:'<path d="M2 9a15 15 0 0 1 20 0"/><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19.5" r=".9"/>',
-  film:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="m3 7 2.5-4 15 2.5L19 7M8 3.6 9.5 7M13.5 4.5 15 7"/>',
-  plane:'<path d="M3 13.5 21 6l-4.5 13-4-5.5z"/><path d="M12.5 13.5 21 6"/><path d="M12.5 13.5v5l2.2-2.7"/>',
-  party:'<path d="M4 20 9 7l8 8z"/><path d="M14 4v2M19 9h2M18 6l-1.5 1.5M11.5 3.5l.5 1.2"/>',
-  pill:'<path d="M10.5 3.5a5 5 0 0 1 7 7l-7 7a5 5 0 0 1-7-7z"/><path d="m7 7 7 7"/>',
-  mountain:'<path d="m3 20 6-11 4 6 2-3 6 8z"/><path d="m7.5 12 1.5 1.3 1.5-1.3"/>',
-  utensils:'<path d="M7 3v8M5 3v5a2 2 0 0 0 4 0V3M7 11v10"/><path d="M17 21V3c-2 1-3 4-3 7h3"/>',
-  briefcase:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 12h18"/>',
-  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7"/><path d="M18 14.5a6.5 6.5 0 0 1 3.5 5.5"/>',
-  money:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/><path d="M6 12h.01M18 12h.01"/>',
-  hourglass:'<path d="M6 3h12M6 21h12"/><path d="M7 3c0 4.5 4 5.5 5 9 1-3.5 5-4.5 5-9"/><path d="M7 21c0-4.5 4-5.5 5-9 1 3.5 5 4.5 5 9"/>',
-  bulb:'<path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/>',
-  star:'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
-  bell:'<path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
-  sliders:'<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>',
-  megaphone:'<path d="M3 10v4a1 1 0 0 0 1 1h3l8 5V4L7 9H4a1 1 0 0 0-1 1z"/><path d="M19 9a4 4 0 0 1 0 6"/>',
-  target:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
-  layers:'<path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/>',
-  scissors:'<circle cx="6" cy="7" r="2.5"/><circle cx="6" cy="17" r="2.5"/><path d="M8 8.5 20 18M8 15.5 20 6"/>',
-  coin:'<circle cx="12" cy="12" r="9"/><path d="M15 9.5c-.5-1-1.6-1.5-3-1.5-1.7 0-3 .9-3 2s1.3 1.7 3 2 3 .9 3 2-1.3 2-3 2c-1.4 0-2.5-.5-3-1.5M12 6.5V8M12 16v1.5"/>',
-  check:'<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
-  mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>'
+  receipt:'<path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2m4 -14h6m-6 4h6m-2 4h2"/>',
+  cart:'<path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M17 17h-11v-14h-2"/><path d="M6 5l14 1l-1 7h-13"/>',
+  pizza:'<path d="M12 21.5c-3.04 0 -5.952 -.714 -8.5 -1.983l8.5 -16.517l8.5 16.517a19.09 19.09 0 0 1 -8.5 1.983z"/><path d="M5.38 15.866a14.94 14.94 0 0 0 6.815 1.634a14.944 14.944 0 0 0 6.502 -1.479"/><path d="M13 11.01v-.01"/><path d="M11 14v-.01"/>',
+  coffee:'<path d="M3 14c.83 .642 2.077 1.017 3.5 1c1.423 .017 2.67 -.358 3.5 -1c.83 -.642 2.077 -1.017 3.5 -1c1.423 -.017 2.67 .358 3.5 1"/><path d="M8 3a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2"/><path d="M12 3a2.4 2.4 0 0 0 -1 2a2.4 2.4 0 0 0 1 2"/><path d="M3 10h14v5a6 6 0 0 1 -6 6h-2a6 6 0 0 1 -6 -6v-5z"/><path d="M16.746 16.726a3 3 0 1 0 .252 -5.555"/>',
+  drink:'<path d="M9 21h6a1 1 0 0 0 1 -1v-3.625c0 -1.397 .29 -2.775 .845 -4.025l.31 -.7c.556 -1.25 .845 -2.253 .845 -3.65v-4a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1v4c0 1.397 .29 2.4 .845 3.65l.31 .7a9.931 9.931 0 0 1 .845 4.025v3.625a1 1 0 0 0 1 1z"/><path d="M6 8h12"/>',
+  fuel:'<path d="M14 11h1a2 2 0 0 1 2 2v3a1.5 1.5 0 0 0 3 0v-7l-3 -3"/><path d="M4 20v-14a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v14"/><path d="M3 20l12 0"/><path d="M18 7v1a1 1 0 0 0 1 1h1"/><path d="M4 11l10 0"/>',
+  car:'<path d="M7 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M17 17m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M5 17h-2v-6l2 -5h9l4 5h1a2 2 0 0 1 2 2v4h-2m-4 0h-6m-6 -6h15m-6 0v-5"/>',
+  home:'<path d="M5 12l-2 0l9 -9l9 9l-2 0"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7"/><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6"/>',
+  bolt:'<path d="M13 3l0 7l6 0l-8 11l0 -7l-6 0l8 -11"/>',
+  wifi:'<path d="M12 18l.01 0"/><path d="M9.172 15.172a4 4 0 0 1 5.656 0"/><path d="M6.343 12.343a8 8 0 0 1 11.314 0"/><path d="M3.515 9.515c4.686 -4.687 12.284 -4.687 17 0"/>',
+  film:'<path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"/><path d="M8 4l0 16"/><path d="M16 4l0 16"/><path d="M4 8l4 0"/><path d="M4 16l4 0"/><path d="M4 12l16 0"/><path d="M16 8l4 0"/><path d="M16 16l4 0"/>',
+  plane:'<path d="M16 10h4a2 2 0 0 1 0 4h-4l-4 7h-3l2 -7h-4l-2 2h-3l2 -4l-2 -4h3l2 2h4l-2 -7h3z"/>',
+  party:'<path d="M4 5h2"/><path d="M5 4v2"/><path d="M11.5 4l-.5 2"/><path d="M18 5h2"/><path d="M19 4v2"/><path d="M15 9l-1 1"/><path d="M18 13l2 -.5"/><path d="M18 19h2"/><path d="M19 18v2"/><path d="M14 16.518l-6.518 -6.518l-4.39 9.58a1 1 0 0 0 1.329 1.329l9.579 -4.39z"/>',
+  pill:'<path d="M4.5 12.5l8 -8a4.94 4.94 0 0 1 7 7l-8 8a4.94 4.94 0 0 1 -7 -7"/><path d="M8.5 8.5l7 7"/>',
+  mountain:'<path d="M3 20h18l-6.921 -14.612a2.3 2.3 0 0 0 -4.158 0l-6.921 14.612z"/><path d="M7.5 11l2 2.5l2.5 -2.5l2 3l2.5 -2"/>',
+  utensils:'<path d="M19 3v12h-5c-.023 -3.681 .184 -7.406 5 -12zm0 12v6h-1v-3m-10 -14v17m-3 -17v3a3 3 0 1 0 6 0v-3"/>',
+  briefcase:'<path d="M3 7m0 2a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v9a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2z"/><path d="M8 7v-2a2 2 0 0 1 2 -2h4a2 2 0 0 1 2 2v2"/><path d="M12 12l0 .01"/><path d="M3 13a20 20 0 0 0 18 0"/>',
+  users:'<path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0 -3 -3.85"/>',
+  money:'<path d="M7 9m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z"/><path d="M14 14m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M17 9v-2a2 2 0 0 0 -2 -2h-10a2 2 0 0 0 -2 2v6a2 2 0 0 0 2 2h2"/>',
+  hourglass:'<path d="M6.5 7h11"/><path d="M6.5 17h11"/><path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z"/><path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z"/>',
+  bulb:'<path d="M3 12h1m8 -9v1m8 8h1m-15.4 -6.4l.7 .7m12.1 -.7l-.7 .7"/><path d="M9 16a5 5 0 1 1 6 0a3.5 3.5 0 0 0 -1 3a2 2 0 0 1 -4 0a3.5 3.5 0 0 0 -1 -3"/><path d="M9.7 17l4.6 0"/>',
+  star:'<path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"/>',
+  bell:'<path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6"/><path d="M9 17v1a3 3 0 0 0 6 0v-1"/>',
+  sliders:'<path d="M14 6m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 6l8 0"/><path d="M16 6l4 0"/><path d="M8 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 12l2 0"/><path d="M10 12l10 0"/><path d="M17 18m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0"/><path d="M4 18l11 0"/><path d="M19 18l1 0"/>',
+  megaphone:'<path d="M18 8a3 3 0 0 1 0 6"/><path d="M10 8v11a1 1 0 0 1 -1 1h-1a1 1 0 0 1 -1 -1v-5"/><path d="M12 8h0l4.524 -3.77a.9 .9 0 0 1 1.476 .692v12.156a.9 .9 0 0 1 -1.476 .692l-4.524 -3.77h-8a1 1 0 0 1 -1 -1v-4a1 1 0 0 1 1 -1h8"/>',
+  target:'<path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M12 12m-5 0a5 5 0 1 0 10 0a5 5 0 1 0 -10 0"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/>',
+  layers:'<path d="M12 4l-8 4l8 4l8 -4l-8 -4"/><path d="M4 12l8 4l8 -4"/><path d="M4 16l8 4l8 -4"/>',
+  scissors:'<path d="M6 7m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M6 17m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0"/><path d="M8.6 8.6l10.4 10.4"/><path d="M8.6 15.4l10.4 -10.4"/>',
+  coin:'<path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M14.8 9a2 2 0 0 0 -1.8 -1h-2a2 2 0 1 0 0 4h2a2 2 0 1 1 0 4h-2a2 2 0 0 1 -1.8 -1"/><path d="M12 7v10"/>',
+  check:'<path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M9 12l2 2l4 -4"/>',
+  mail:'<path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z"/><path d="M3 7l9 6l9 -6"/>'
 };
 const GCOL = { receipt:'#c9d6df', cart:'#a4d8ff', pizza:'#ffb26b', coffee:'#e58fc9', drink:'#ffb26b', fuel:'#7fc4f0', car:'#7fc4f0', home:'#7c5cff', bolt:'#ffb26b', wifi:'#a4d8ff', film:'#f3a6de', plane:'#7fc4f0', party:'#f3a6de', pill:'#ff7a90', mountain:'#a4d8ff', utensils:'#ffb26b', briefcase:'#c9d6df', users:'#7c5cff', money:'#a4d8ff', hourglass:'#ffb26b', bulb:'#a4d8ff', star:'#f3a6de', bell:'#7c5cff', sliders:'#a4d8ff', megaphone:'#f3a6de', target:'#7c5cff', layers:'#a4d8ff', scissors:'#f3a6de', coin:'#ffb26b', check:'#a4d8ff', mail:'#e58fc9' };
 const EMO_MAP = { '💸':'money' };
@@ -756,7 +769,7 @@ function subRow(s){
   return swipeWrap([
     `<button class="sa-cancel" data-act="swCancel" data-id="${s.id}">${ICON.pause}Cancel</button>`,
     `<button class="sa-delete" data-act="swDelete" data-id="${s.id}">${ICON.trash}Delete</button>`
-  ], `<button class="row swipe-row" data-act="editSub" data-id="${s.id}">${av(s.name)}
+  ], `<button class="row swipe-row" data-act="editSub" data-id="${s.id}">${subAv(s)}
     <div class="main"><div class="t">${esc(s.name)}${badge}</div><div class="s">${when}</div></div>
     <div class="r"><div class="p">${fmt(s.price)}</div><div class="u">${per}</div></div></button>`);
 }
@@ -764,7 +777,7 @@ function cancelledRow(s){
   return swipeWrap([
     `<button class="sa-restore" data-act="swRestore" data-id="${s.id}">${ICON.undo}Restore</button>`,
     `<button class="sa-delete" data-act="swDelete" data-id="${s.id}">${ICON.trash}Delete</button>`
-  ], `<button class="row swipe-row" data-act="editSub" data-id="${s.id}">${av(s.name)}<div class="main"><div class="t">${esc(s.name)}</div><div class="s">Cancelled ${s.cancelledAt ? dateText(s.cancelledAt) : ''}</div></div><div class="r"><div class="p pos-t">${fmt(monthly(s))}</div><div class="u">saved /mo</div></div></button>`);
+  ], `<button class="row swipe-row" data-act="editSub" data-id="${s.id}">${subAv(s)}<div class="main"><div class="t">${esc(s.name)}</div><div class="s">Cancelled ${s.cancelledAt ? dateText(s.cancelledAt) : ''}</div></div><div class="r"><div class="p pos-t">${fmt(monthly(s))}</div><div class="u">saved /mo</div></div></button>`);
 }
 
 let homeTotal = 0, shownTotal = 0;
@@ -777,7 +790,7 @@ function vOnboard(){
   if (obStep === 1){
     const tot = PRESETS.filter((p,i) => obPicked.has(i)).reduce((a,p) => a + p[1], 0);
     return `<div class="ob top">${dots(1)}<div class="eyebrow">Step 1 of 3</div><h1 class="sm">What do you pay for?</h1><p class="lead">Tap everything you’re subscribed to. Prices are typical, and you can edit them anytime.</p>
-      <div class="picks">${PRESETS.map((p,i) => `<button class="pick" data-act="obPick" data-id="${i}" aria-pressed="${obPicked.has(i)}">${av(p[0],'sm')}<span class="tx"><span class="n">${esc(p[0])}</span><span class="p">${fmt(p[1])}/mo</span></span><span class="ck">✓</span></button>`).join('')}</div></div>
+      <div class="picks">${PRESETS.map((p,i) => `<button class="pick" data-act="obPick" data-id="${i}" aria-pressed="${obPicked.has(i)}">${subAv({ name:p[0] },'sm')}<span class="tx"><span class="n">${esc(p[0])}</span><span class="p">${fmt(p[1])}/mo</span></span><span class="ck">✓</span></button>`).join('')}</div></div>
       <div class="obbar"><div class="obin"><div class="c"><b id="obCount">${obPicked.size} picked</b><span id="obTot">about ${fmt(tot)} a month</span></div><div style="display:flex;gap:8px"><button class="btn ghost small" data-act="obNext">Skip</button><button class="btn primary" data-act="obNext">Continue</button></div></div></div>`;
   }
   if (obStep === 2) return `<div class="ob">${dots(2)}<div class="eyebrow">Step 2 of 3</div><h1 class="sm">Make it yours</h1><p class="lead">Used for greetings and the reminders you send friends.</p>
@@ -809,7 +822,7 @@ function homeAlerts(subs){
 const CARD_COLORS = [['#26262B','#F2F2F4'],['#7C5CFF','#FFFFFF'],['#A4D8FF','#0C0C0C'],['#F3A6DE','#0C0C0C'],['#FFB26B','#0C0C0C']];
 const gColor = g => CARD_COLORS[Math.max(0, S.groups.indexOf(g)) % CARD_COLORS.length];
 const gIcon = g => `<svg class="wgi" viewBox="0 0 24 24" aria-hidden="true">${GLYPH[gName(gEmoji(g))]}</svg>`;
-const SUB_ICON = '<svg class="wgi" viewBox="0 0 24 24" aria-hidden="true"><path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/></svg>';
+const SUB_ICON = '<svg class="wgi" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12v-3a3 3 0 0 1 3 -3h13m-3 -3l3 3l-3 3"/><path d="M20 12v3a3 3 0 0 1 -3 3h-13m3 3l-3 -3l3 -3"/></svg>';
 const whenShort = d => d === 0 ? 'today' : d === 1 ? 'tomorrow' : `in ${d} days`;
 let entering = false, dealt = false;
 function nudgeText(subs){
@@ -828,7 +841,7 @@ function vHome(){
   const PEEK = 60, FRONT = 206, gs = S.groups;
   const cards = gs.map((g,i) => {
     const [c,t] = gColor(g), v = balances(g).me || 0;
-    const st = v > 0.004 ? `Owed ${fmt(v)}` : v < -0.004 ? `You owe ${fmt(-v)}` : 'Settled';
+    const st = !g.expenses.length ? 'No expenses yet' : v > 0.004 ? `Owed ${fmt(v)}` : v < -0.004 ? `You owe ${fmt(-v)}` : 'Settled';
     return `<a class="wcard" href="#group-${g.id}" data-act="pull" style="--c:${c};--t:${t};top:${i * PEEK}px;--i:${i}"><div class="wh"><span class="wn">${gIcon(g)}${esc(g.name)}</span><span class="st">${st}</span></div></a>`;
   }).join('');
   const next = subs.filter(s => !s.needsDate).sort((a,b) => parse(a.next) - parse(b.next))[0];
@@ -887,13 +900,13 @@ function subLine(s){
   return swipeWrap([
     `<button class="sa-cancel" data-act="swCancel" data-id="${s.id}">${ICON.pause}Tear off</button>`,
     `<button class="sa-delete" data-act="swDelete" data-id="${s.id}">${ICON.trash}Delete</button>`
-  ], `<button class="ln swipe-row" data-act="editSub" data-id="${s.id}"><span><span class="nm">${nm}</span><span class="mt ${warn ? 'warn' : ''}">${meta}</span></span><span class="am">${fmt(monthly(s))}${small}</span></button>`);
+  ], `<button class="ln swipe-row" data-act="editSub" data-id="${s.id}"><span class="lnl">${subAv(s,'rc')}<span class="lnt"><span class="nm">${nm}</span><span class="mt ${warn ? 'warn' : ''}">${meta}</span></span></span><span class="am">${fmt(monthly(s))}${small}</span></button>`);
 }
 function goneLine(s){
   return swipeWrap([
     `<button class="sa-restore" data-act="swRestore" data-id="${s.id}">${ICON.undo}Restore</button>`,
     `<button class="sa-delete" data-act="swDelete" data-id="${s.id}">${ICON.trash}Delete</button>`
-  ], `<button class="ln gone swipe-row" data-act="editSub" data-id="${s.id}"><span><span class="nm">${esc(s.name)}</span><span class="mt">Torn off ${s.cancelledAt ? dateText(s.cancelledAt) : ''}</span></span><span class="am">${fmt(monthly(s))}</span></button>`);
+  ], `<button class="ln gone swipe-row" data-act="editSub" data-id="${s.id}"><span class="lnl">${subAv(s,'rc')}<span class="lnt"><span class="nm">${esc(s.name)}</span><span class="mt">Torn off ${s.cancelledAt ? dateText(s.cancelledAt) : ''}</span></span></span><span class="am">${fmt(monthly(s))}</span></button>`);
 }
 const backBtn = `<a class="iconbtn" href="#home" aria-label="Back to wallet">${ICON.back}</a>`;
 function vSubs(){
@@ -952,7 +965,7 @@ function vInsights(act, gone, total){
     <div class="duo"><div class="tile"><div class="k">Per year</div><div class="v">${fmt(total * 12)}</div></div><div class="tile"><div class="k">Due in 7 days</div><div class="v">${fmt(week)}</div></div></div>
   </div><div>
     <div class="sec" style="margin-top:22px"><h2>Biggest costs</h2></div>
-    <div class="list">${top.map(s => `<button class="row" data-act="editSub" data-id="${s.id}">${av(s.name)}<div class="main"><div class="t">${esc(s.name)}</div><div class="bar" style="--c:${color(s.name)}"><i style="width:${Math.round(monthly(s) / total * 100)}%"></i></div></div><div class="r"><div class="p">${fmt(monthly(s))}</div><div class="u">${Math.round(monthly(s) / total * 100)}% of total</div></div></button>`).join('')}</div>
+    <div class="list">${top.map(s => `<button class="row" data-act="editSub" data-id="${s.id}">${subAv(s)}<div class="main"><div class="t">${esc(s.name)}</div><div class="bar" style="--c:${color(s.name)}"><i style="width:${Math.round(monthly(s) / total * 100)}%"></i></div></div><div class="r"><div class="p">${fmt(monthly(s))}</div><div class="u">${Math.round(monthly(s) / total * 100)}% of total</div></div></button>`).join('')}</div>
     ${saved > 0 ? `<div class="note" style="margin-top:12px">You’re already saving <b>${fmt(saved * 12)}</b> a year from what you cancelled.</div>` : ''}
   </div></div>`;
 }
@@ -978,7 +991,7 @@ function vCalendar(act){
   }
   const wd = ['S','M','T','W','T','F','S'];
   const title = m0.toLocaleDateString(undefined, { month:'long', year:'numeric' });
-  const sel = calSel ? `<div class="sec"><h2>${longDate(calSel)}</h2></div><div class="list">${occ[calSel].map(s => `<button class="row" data-act="editSub" data-id="${s.id}">${av(s.name)}<div class="main"><div class="t">${esc(s.name)}</div><div class="s">${esc(s.cat)}${s.shared > 1 ? `, your share of ${fmt(s.price)}` : ''}</div></div><div class="r"><div class="p">${fmt(share(s))}</div><div class="u">${CYCLE[s.cycle]}</div></div></button>`).join('')}</div>` : '';
+  const sel = calSel ? `<div class="sec"><h2>${longDate(calSel)}</h2></div><div class="list">${occ[calSel].map(s => `<button class="row" data-act="editSub" data-id="${s.id}">${subAv(s)}<div class="main"><div class="t">${esc(s.name)}</div><div class="s">${esc(s.cat)}${s.shared > 1 ? `, your share of ${fmt(s.price)}` : ''}</div></div><div class="r"><div class="p">${fmt(share(s))}</div><div class="u">${CYCLE[s.cycle]}</div></div></button>`).join('')}</div>` : '';
   return `<div class="ins-grid"><div class="panel">
     <div class="cal-head"><div><h3>${title}</h3><div class="s">${count ? `${count} payment${count>1?'s':''}, ${fmt(mTotal)} due` : 'Nothing due'}</div></div>
       <div class="navs"><button class="iconbtn" data-act="calNav" data-id="-1" aria-label="Previous month" ${calOffset <= 0 ? 'disabled' : ''}>${ICON.back}</button><button class="iconbtn" data-act="calNav" data-id="1" aria-label="Next month" ${calOffset >= 11 ? 'disabled' : ''}>${ICON.next}</button></div></div>
@@ -1006,17 +1019,8 @@ function expLine(g, x){
   return swipeWrap([`<button class="sa-delete" data-act="swDelExp" data-id="${g.id}" data-x="${x.id}">${ICON.trash}Delete</button>`],
     `<button class="ln swipe-row" data-act="expDetail" data-id="${g.id}" data-x="${x.id}"><span><span class="nm">${nm}</span><span class="mt">${mt}</span></span><span class="am">${fmt(x.amount)}${small}</span></button>`);
 }
-function vGroup(g){
-  const b = balances(g), v = b.me || 0, debts = simplify(b), [c,t] = gColor(g);
-  const acts = [...g.expenses].reverse().sort((a,b2) => b2.date.localeCompare(a.date));
-  const head = v > 0.004 ? `${fmt(v)}<small>you’re owed</small>` : v < -0.004 ? `${fmt(-v)}<small>you owe</small>` : `0.00<small>settled up</small>`;
-  return topbar(esc(g.name), '', `<div class="tb-acts"><button class="iconbtn" data-act="invite" data-id="${g.id}" aria-label="Invite people">${ICON.invite}</button><button class="iconbtn" data-act="editGroup" data-id="${g.id}" aria-label="Group options">${ICON.dots}</button></div>`, backBtn) + `
-  <div class="wrapc ${entering ? '' : 'still'}">
-    <div class="cardhead" style="--c:${c};--t:${t}"><span class="n">${gIcon(g)}${g.members.length} people</span><span class="a">${head}</span></div>
-    <div class="slot"></div>
-    <div class="feed"><div class="slip">
-      <div class="ttl">${esc(g.name.toUpperCase())}</div><div class="hd">${g.members.map(m => esc(mName(g,m.id))).join(', ')}</div>
-      <div class="dash"></div>
+function groupBody(g, debts, acts, v){
+  return `
       <div class="shd">To settle up</div>
       ${debts.length ? debts.map(d => `<div class="ln debt"><span><span class="nm">${debtText(g,d)}</span></span><span class="am">${fmt(d.amt)}<button class="sbtn" data-act="settle" data-id="${g.id}" data-from="${d.from}" data-to="${d.to}" data-amt="${d.amt}">Settle</button></span></div>`).join('') : `<div class="sub-ln"><span>Everyone’s square</span><span>✓</span></div>`}
       <div class="dash"></div>
@@ -1024,7 +1028,21 @@ function vGroup(g){
       ${acts.length ? acts.map(x => expLine(g,x)).join('') : `<div class="cardempty">No expenses yet. Add the first one.</div>`}
       <div class="dash"></div>
       <div class="tot"><span>Total spent</span><span>${fmt(spent(g))}</span></div>
-      <div class="sub-ln ${v < -0.004 ? 'r' : v > 0.004 ? 'v' : ''}"><span>Your balance</span><span>${v > 0.004 ? '+' : v < -0.004 ? '−' : ''}${fmt(Math.abs(v))}</span></div>
+      <div class="sub-ln ${v < -0.004 ? 'r' : v > 0.004 ? 'v' : ''}"><span>Your balance</span><span>${v > 0.004 ? '+' : v < -0.004 ? '−' : ''}${fmt(Math.abs(v))}</span></div>`;
+}
+function vGroup(g){
+  const b = balances(g), v = b.me || 0, debts = simplify(b), [c,t] = gColor(g);
+  const acts = [...g.expenses].reverse().sort((a,b2) => b2.date.localeCompare(a.date));
+  const empty = !g.expenses.length;
+  const head = empty ? `$0<small>no expenses yet</small>` : v > 0.004 ? `${fmt(v)}<small>you’re owed</small>` : v < -0.004 ? `${fmt(-v)}<small>you owe</small>` : `0.00<small>settled up</small>`;
+  return topbar(esc(g.name), '', `<div class="tb-acts"><button class="iconbtn" data-act="invite" data-id="${g.id}" aria-label="Invite people">${ICON.invite}</button><button class="iconbtn" data-act="editGroup" data-id="${g.id}" aria-label="Group options">${ICON.dots}</button></div>`, backBtn) + `
+  <div class="wrapc ${entering ? '' : 'still'}">
+    <div class="cardhead" style="--c:${c};--t:${t}"><span class="n">${gIcon(g)}${g.members.length} people</span><span class="a">${head}</span></div>
+    <div class="slot"></div>
+    <div class="feed"><div class="slip">
+      <div class="ttl">${esc(g.name.toUpperCase())}</div><div class="hd">${g.members.map(m => esc(mName(g,m.id))).join(', ')}</div>
+      <div class="dash"></div>
+      ${empty ? `<div class="cardempty"><b style="display:block;color:var(--paper-ink);font-size:16px;font-weight:500;margin-bottom:6px">Add your first expense</b>Enter what someone paid, like rent, groceries or dinner. Settle splits it and works out who owes who.<br><button class="sbtn" style="margin-top:14px;font-size:14px;padding:10px 18px" data-act="addExpense" data-id="${g.id}">Add expense</button></div>` : groupBody(g, debts, acts, v)}
     </div></div>
     ${acts.length ? `<p class="tearhint">Swipe an expense left to delete it</p>` : ''}
     <div class="cardacts"><button class="btn primary" data-act="addExpense" data-id="${g.id}">Add expense</button><button class="btn ghost" data-act="settle" data-id="${g.id}">Settle up</button></div>
@@ -1229,7 +1247,7 @@ function rateSheet(){
   const act = activeSubs();
   if (!act.length){ toast('Add a subscription first'); return; }
   const opts = [['love','Love it'],['meh','It’s okay'],['rarely','Rarely use']];
-  openSheet('Worth it?', `<form id="f"><p class="hint" style="margin:0 0 6px">Be honest. Settle uses this to point out easy savings.</p>${act.map(s => `<div class="rate"><div class="rh">${av(s.name,'xs')}${esc(s.name)}<span style="margin-left:auto;color:var(--muted);font-size:13px">${fmt(monthly(s))}/mo</span></div><div class="seg full">${opts.map(([k,l]) => `<label><input type="radio" name="w_${s.id}" value="${k}" ${s.worth===k?'checked':''}><span>${l}</span></label>`).join('')}</div></div>`).join('')}<button class="btn primary block" type="submit" style="margin-top:14px">Save ratings</button></form>`, root => {
+  openSheet('Worth it?', `<form id="f"><p class="hint" style="margin:0 0 6px">Be honest. Settle uses this to point out easy savings.</p>${act.map(s => `<div class="rate"><div class="rh">${subAv(s,'xs')}${esc(s.name)}<span style="margin-left:auto;color:var(--muted);font-size:13px">${fmt(monthly(s))}/mo</span></div><div class="seg full">${opts.map(([k,l]) => `<label><input type="radio" name="w_${s.id}" value="${k}" ${s.worth===k?'checked':''}><span>${l}</span></label>`).join('')}</div></div>`).join('')}<button class="btn primary block" type="submit" style="margin-top:14px">Save ratings</button></form>`, root => {
     const f = root.querySelector('#f');
     f.addEventListener('submit', e => { e.preventDefault(); act.forEach(s => { const r = f.querySelector(`[name="w_${s.id}"]:checked`); if (r) s.worth = r.value; }); done('Ratings saved'); });
   });
@@ -1411,7 +1429,7 @@ function subSheet(id){
   const cyc = [['month','Monthly'],['year','Yearly'],['week','Weekly']];
   const worth = [['love','Love it'],['meh','It’s okay'],['rarely','Rarely use']];
   const body = `
-    ${!s ? `<div class="presets">${PRESETS.map((p,i) => `<button type="button" class="pchip" data-preset="${i}">${av(p[0],'xs')}${esc(p[0])}</button>`).join('')}</div>` : ''}
+    ${!s ? `<div class="presets">${PRESETS.map((p,i) => `<button type="button" class="pchip" data-preset="${i}">${subAv({ name:p[0] },'xs')}${esc(p[0])}</button>`).join('')}</div>` : ''}
     <form id="f" novalidate>
       <label class="field"><span>Name</span><input type="text" name="name" value="${esc(v.name)}" placeholder="Netflix, gym, phone plan…" required></label>
       <div class="grid2">
@@ -1423,6 +1441,7 @@ function subSheet(id){
         <label class="field"><span>Next payment</span><input type="date" name="next" value="${v.next}"></label>
         <label class="field"><span>Category</span><select name="cat">${CATS.map(c => `<option ${v.cat===c?'selected':''}>${c}</option>`).join('')}</select></label>
       </div>
+      <label class="field"><span>Website, for the logo</span><input type="text" name="site" value="${esc(v.site || siteFor(v))}" placeholder="crave.ca" autocapitalize="off" autocomplete="off" inputmode="url"></label>
       <label class="switch"><input type="checkbox" name="trial" ${v.trial ? 'checked' : ''}><span class="sw"></span><span class="sl"><b>Free trial</b><small>The date above is when the trial ends. Settle warns you before.</small></span></label>
       <div class="field"><span>Worth it?</span><div class="seg full">${worth.map(([k,l]) => `<label><input type="radio" name="worth" value="${k}" ${v.worth===k?'checked':''}><span>${l}</span></label>`).join('')}</div></div>
       <button class="btn primary block" type="submit">${s ? 'Save changes' : 'Add subscription'}</button>
@@ -1433,7 +1452,7 @@ function subSheet(id){
     const f = root.querySelector('#f');
     root.addEventListener('click', e => {
       const p = e.target.closest('[data-preset]');
-      if (p){ const [n,pr,c] = PRESETS[+p.dataset.preset]; f.name.value = n; f.price.value = pr.toFixed(2); f.cat.value = c; buzz(8); return; }
+      if (p){ const [n,pr,c] = PRESETS[+p.dataset.preset]; f.name.value = n; f.price.value = pr.toFixed(2); f.cat.value = c; f.site.value = SITES[n.toLowerCase()] || ''; buzz(8); return; }
       const b = e.target.closest('[data-sub]'); if (!b) return;
       if (b.dataset.sub === 'ics'){ download(`${s.name.replace(/[^a-z0-9]+/gi,'-').toLowerCase()}-renewal.ics`, new Blob([icsFor(s)], { type:'text/calendar' })); toast('Calendar reminder downloaded'); return; }
       const snap = snapshot();
@@ -1441,13 +1460,14 @@ function subSheet(id){
       if (b.dataset.sub === 'restore'){ s.status = 'active'; delete s.cancelledAt; rollForward(s); done('Restored', snap); }
       if (b.dataset.sub === 'delete' && armed(b, 'Tap again to delete')){ S.subs = S.subs.filter(x => x.id !== s.id); done('Subscription deleted', snap); }
     });
+    f.name.addEventListener('change', () => { if (!f.site.value) f.site.value = SITES[f.name.value.trim().toLowerCase()] || ''; });
     f.addEventListener('submit', e => {
       e.preventDefault();
       const name = f.name.value.trim(), price = num(f.price.value);
       if (!name || !(price > 0)){ toast('Add a name and a price'); return; }
       const next = f.next.value || iso(today());
       const w = f.querySelector('[name=worth]:checked');
-      const data = { name, price, cycle:f.cycle.value, next, day:parse(next).getDate(), cat:f.cat.value, shared:+f.shared.value, trial:f.trial.checked, worth:w ? w.value : undefined };
+      const data = { site:cleanSite(f.site.value) || undefined, name, price, cycle:f.cycle.value, next, day:parse(next).getDate(), cat:f.cat.value, shared:+f.shared.value, trial:f.trial.checked, worth:w ? w.value : undefined };
       let target = s;
       if (s){ Object.assign(s, data); delete s.needsDate; } else { target = Object.assign({ id:uid(), status:'active' }, data); S.subs.push(target); }
       rollForward(target);
@@ -1481,7 +1501,7 @@ function groupSheet(id){
       if (g){ g.name = name; g.emoji = emoji; g.members.push(...people); done('Changes saved'); return; }
       if (!people.length){ toast('Add at least one other person'); return; }
       const ng = { id:uid(), sid:uid(), name, emoji, members:[{ id:'me', name:'You' }, ...people], expenses:[] };
-      S.groups.unshift(ng); save(); closeSheet(); location.hash = 'group-' + ng.id; toast('Group created');
+      S.groups.unshift(ng); save(); closeSheet(); location.hash = 'group-' + ng.id; setTimeout(() => expenseSheet(ng.id), 380);
     });
     const del = root.querySelector('[data-del]');
     del && del.addEventListener('click', () => { if (armed(del, 'Tap again to delete')){ const snap = snapshot(); S.groups = S.groups.filter(x => x.id !== g.id); save(); closeSheet(); location.hash = 'split'; toast('Group deleted', () => restore(snap)); } });

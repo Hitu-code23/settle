@@ -1309,7 +1309,7 @@ function vLegal(kind){
     sec('What leaves your device', ['Invite links: when you share a group, the link contains that group’s name, member names and expenses. Anyone with the link can read them, so only send it to people in the group.', 'Service logos: to show logos, QELVO asks Google’s favicon service for the icon of a service’s website, like netflix.com. Your amounts and names are not sent.', 'Fonts are loaded from Google Fonts. Like any website request, these providers can see basic technical details such as your IP address.']),
     sec('Notifications', ['Renewal alerts are created on your device. They are only turned on if you allow them, and you can turn them off anytime.']),
     sec('Photos, payments and app lock', ['Receipt photos you attach are stored only on this device. Payment buttons open PayPal or Venmo with the amount filled in; QELVO never sees or handles your money. App lock uses a PIN saved as a one-way code, plus your phone’s own Face ID or fingerprint check, which never shares your face or fingerprint with QELVO.']),
-    sec('Selling and tracking', ['QELVO does not sell your data and does not use advertising trackers.']),
+    sec('Selling and tracking', ['QELVO does not sell your data and does not use advertising trackers. To see how many people use the app, it counts app opens and a few actions (like adding a subscription) with a random device code. These counts never include your name, email, amounts or what you track.']),
     sec('Children', ['QELVO is not intended for children under 13.']),
     sec('Changes and contact', ['If this policy changes, the date below will be updated. Questions: <a href="mailto:hitin@velorienstudiocreative.com">hitin@velorienstudiocreative.com</a>.'])
   ] : [
@@ -1563,6 +1563,18 @@ function srvExp(g, x){ const y = mapIds(x, 'me', g.myId); delete y.photo; return
 const gmeta = (name, emoji, members) => ({ name, emoji:emoji || null, members:members.map(cm) });
 function saveLocal(){ pulling = true; try { save(); } finally { pulling = false; } }
 
+/* Anonymous usage counts: a random device code + what happened. No names, emails or amounts. */
+const VID = (() => { try { let v = localStorage.getItem('qelvo.vid'); if (!v){ v = uid() + uid() + uid(); localStorage.setItem('qelvo.vid', v); } return v; } catch(e){ return 'anon' + uid() + uid(); } })();
+function track(kind){
+  if (location.protocol === 'file:' || /^(localhost|127\.0\.0\.1)$/.test(location.hostname)) return;
+  try {
+    let ref = ''; try { ref = document.referrer ? new URL(document.referrer).hostname.slice(0, 80) : ''; } catch(e){}
+    if (ref === location.hostname) ref = '';
+    fetch(SB_URL + '/rest/v1/events', { method:'POST', keepalive:true, headers:{ apikey:SB_KEY, Authorization:'Bearer ' + SB_KEY, 'Content-Type':'application/json', Prefer:'return=minimal' },
+      body:JSON.stringify({ vid:VID, kind, standalone:isStandalone(), platform:isIOS ? 'ios' : /android/i.test(navigator.userAgent) ? 'android' : 'desktop', ref }) }).catch(() => {});
+  } catch(e){}
+}
+window.addEventListener('appinstalled', () => track('install'));
 function loadCloud(){
   if (sb || location.protocol === 'file:') return;
   const s = document.createElement('script'); s.src = SB_JS; s.async = true; s.crossOrigin = 'anonymous';
@@ -1573,6 +1585,7 @@ function cloudInit(){
   try { sb = supabase.createClient(SB_URL, SB_KEY, { auth:{ persistSession:true, autoRefreshToken:true, detectSessionInUrl:true } }); } catch(e){ sb = null; return; }
   sb.auth.onAuthStateChange((ev, session) => {
     const was = cloudUser; cloudUser = session ? session.user : null;
+    if (ev === 'SIGNED_IN' && !was && cloudUser) track('signin');
     if (cloudUser && (!was || was.id !== cloudUser.id)) setTimeout(startSync, 0);
     if (!cloudUser && was) stopSync();
     if (wrap.hidden && ['you','home',''].includes(location.hash.slice(1))) render();
@@ -1741,7 +1754,7 @@ async function cloudJoinSheet(gid, code){
       if (je){ toast(/duplicate|unique/i.test(je.message) ? 'Someone already picked that name. Choose another.' : 'Couldn’t join. Try again.'); return; }
       const picked = mid && open.find(m => m.id === mid);
       if (!S.name) S.name = nm && !mid ? nm : picked ? picked.name : S.name;
-      S.onboarded = true; obStep = 0; saveLocal(); closeSheet();
+      S.onboarded = true; obStep = 0; saveLocal(); closeSheet(); track('join');
       queueSync(async () => { await pullAll(true); location.hash = 'group-' + gid; toast(`You joined ${p.name}`); });
     });
   });
@@ -2190,6 +2203,7 @@ function subSheet(id){
       const old = s ? { price:s.price, cur:s.cur } : null;
       const data = { cur:f.cur.value, card:f.card.value.trim() || undefined, site:cleanSite(f.site.value) || undefined, name, price, cycle:f.cycle.value, next, day:parse(next).getDate(), cat:f.cat.value, shared:+f.shared.value, trial:f.trial.checked, worth:w ? w.value : undefined };
       let target = s, msg = s ? 'Changes saved' : 'Subscription added';
+      if (!s) track('sub_add');
       if (old && old.price && Math.abs(old.price - price) > 0.004 && (old.cur || S.currency) === data.cur){
         data.hist = [...(s.hist || []), { d:iso(today()), from:old.price, to:price }];
         if (price > old.price) msg = `${name} went up ${fmt(conv(price - old.price, data.cur))}`;
@@ -2254,7 +2268,7 @@ function groupSheet(id){
       }
       if (!people.length){ toast('Add at least one other person'); return; }
       const ng = { id:uid(), sid:uid(), name, emoji, members:[{ id:'me', name:'You' }, ...people], expenses:[] };
-      S.groups.unshift(ng); save(); closeSheet(); location.hash = 'group-' + ng.id; setTimeout(() => expenseSheet(ng.id), 380);
+      S.groups.unshift(ng); save(); closeSheet(); track('group_new'); location.hash = 'group-' + ng.id; setTimeout(() => expenseSheet(ng.id), 380);
     });
     const del = root.querySelector('[data-del]');
     del && del.addEventListener('click', () => { if (armed(del, 'Tap again to delete')){ const snap = snapshot(); trash('group', g); S.groups = S.groups.filter(x => x.id !== g.id); save(); closeSheet(); location.hash = 'home'; toast('Group deleted', () => restore(snap)); } });
@@ -2359,7 +2373,7 @@ function expenseSheet(gid, xid){
       } else { x.repeat = undefined; x.nextDue = undefined; }
       const snap = x0 ? snapshot() : null;
       const target = x0 || Object.assign({ id:uid() }, x);
-      if (x0) Object.assign(x0, x); else g.expenses.push(target);
+      if (x0) Object.assign(x0, x); else { g.expenses.push(target); track('expense_add'); }
       const file = f.photo.files && f.photo.files[0];
       const finish = () => { const added = processRecurring(); done(x0 ? 'Changes saved' : added ? `Expense added, plus ${added} past month${added > 1 ? 's' : ''}` : 'Expense added', snap); };
       if (file){ shrinkImage(file).then(b => putPhoto(target.id, b)).then(() => { target.photo = true; finish(); }).catch(() => { toast('Couldn’t save the photo'); finish(); }); }
@@ -2521,6 +2535,7 @@ const actions = {
   },
   invite: async id => {
     const g = S.groups.find(x => x.id === id); if (!g) return;
+    track('invite');
     if (cloudUser){
       if (!g.cloud || !g.code){ scheduleSync(); toast('Still syncing this group. Try again in a moment.'); return; }
       const link = `${location.origin}${location.pathname}?g=${encodeURIComponent(g.id)}&c=${g.code}`;
@@ -2609,6 +2624,7 @@ function applyTheme(){
   checkAlerts();
   if (rec) setTimeout(() => toast(`Added ${rec} repeating bill${rec > 1 ? 's' : ''}`), show && !reduceMotion ? 1400 : 300);
   loadCloud();
+  try { if (!sessionStorage.getItem('qelvo.open')){ sessionStorage.setItem('qelvo.open', '1'); track('open'); } } catch(e){ track('open'); }
   const qp = new URLSearchParams(location.search), cg = qp.get('g'), cc = qp.get('c');
   if (cg && cc){
     history.replaceState(null, '', location.pathname + location.hash);
